@@ -1,0 +1,37 @@
+{
+    "name": "laravelcollective/annotations",
+    "description": "Route Annotations for The Laravel Framework.",
+    "license": "MIT",
+    "homepage": "http://laravelcollective.com",
+    "support": {
+        "issues": "https://github.com/LaravelCollective/annotations/issues",
+        "source": "https://github.com/LaravelCollective/annotations"
+    },
+    "authors": [
+        {
+            "name": "Adam Engebretson",
+            "email": "adam@enge.me"
+        },
+        {
+            "name": "Taylor Otwell",
+            "email": "taylorotwell@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4",
+        "illuminate/console": "5.3.*",
+        "illuminate/filesystem": "5.3.*",
+        "illuminate/support": "5.3.*",
+        "doctrine/annotations": "~1.0"
+    },
+    "require-dev": {
+        "illuminate/database": "5.3.*",
+        "mockery/mockery": "~0.9.4",
+        "phpunit/phpunit": "~5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Collective\\Annotations\\": "src/"
+        }
+    }
+}
