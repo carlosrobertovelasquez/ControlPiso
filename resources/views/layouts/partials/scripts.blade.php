@@ -45,14 +45,9 @@
 <script>
    $(function () {
     $('#example1').DataTable({
-       
+         "scrollX": true,
         "lengthMenu":[[10,25,50,-1],[10,25,50,"All"]],
-        buttons:[
-             {
-            extend: 'csv',
-            text: 'Copiar Datos'
-        }
-        ],
+     
         "language":{
        "lengthMenu":"Mostrar _MENU_ registros por página.",
        "zeroRecords": "Lo sentimos. No se encontraron registros.",
@@ -69,7 +64,7 @@
      }
       }
 
-     
+    
 
 
 

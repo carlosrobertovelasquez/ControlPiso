@@ -10,31 +10,37 @@
 
 @section('main-content')
 
-
+         
+        
 <section class="content">
+<a href=" {{url('registro')}}" ><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>
   <form  id="form_registrohoras" role="search" action="#" method="GET" >
+
           <input type="hidden" name="_token" value="{{csrf_token()}}">
-  	<div class="box box-default">
-  	 	<div class="box-header with-border">
-  	 		<h3 class="box-title">Datos Generales</h3>
+          <input type="hidden" name="planificacion_id" name="planificacion_id" value="{{$encabezado->id}}">
+
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">Datos Generales</h3>
+
 
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
            
           </div>
-  	 	</div>
+      </div>
 
-  	 	<div class="box-body">
-  	 		 <div class="col-md-6">
-  	 		 	<div class="form-group">
+      <div class="box-body">
+         <div class="col-md-6">
+          <div class="form-group">
                  <div class="form-group">
                           <label > Fecha : </label>
                           <input  type="date" class="form-control" id="id_fecha"  name="id_fecha" style="width: 450px;height: 40px"   value="<?php echo date("Y-m-d");?>">      
                          </div>
                 <!-- /.input group -->
               </div>
-  	 		 	
-  	 		 	 <div class="form-group">
+          
+           <div class="form-group">
                         <label>Centro Costo : </label>
                         <input id="maquina" name="maquina" type="text" class="form-control" value="{{$encabezado->centrocosto}}" readonly="readonly" >
                       </div>
@@ -43,9 +49,9 @@
                         <input id="norden" name="norden" type="text" class="form-control" value="{{$encabezado->ordenproduccion}}" readonly="readonly" >
                       </div>     
 
-                	 		 </div>
+                       </div>
              <div class="col-md-6">
-             	 <div class="form-group">
+               <div class="form-group">
                         <label>Articulo : </label>
                         <input id="id_articulo" name="id_articulo" type="text" class="form-control" value="{{$encabezado->articulo}}" readonly="readonly" >
                       </div>     
@@ -80,33 +86,27 @@
 
              </div>
 
-  	 	</div>
+      </div>
 
-  	 </div>
+     </div>
 
     <div class="box box-default">
-  	 	<div class="box-header with-border">
-  	 		<h3 class="box-title">Registro Horas Trabajadas</h3>
+      <div class="box-header with-border">
+        <h3 class="box-title">Registro Horas Trabajadas</h3>
 
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
            
           </div>
-  	 	</div>
+      </div>
 
  
-  	 	 <div class="box-body">
+       <div class="box-body">
 
        
-              <div class="row">
-        
-             
-
-
-               
+              <div class="row">               
                 <div class="col-xs-2">
                   <input  type="time" class="form-control" id="hora1"  name="hora1" style="width: 135px;height: 25px"   value="<?php echo date("H:i");?>">
-                  
                 </div>
                 <div class="col-xs-2">
                    <input  type="time" class="form-control" id="hora2" onblur="restarHoras();"  name="hora2" style="width: 135px;height: 25px"   value="<?php echo date("H:i");?>">
@@ -114,7 +114,6 @@
                 <div class="col-xs-2">
                   <input type="text" readonly="readonly" name="horatotal" class="form-control" placeholder="Tiempo Minutos"  id="horatotal">
                 </div>
-   
                 <div class="col-xs-2">
                     <select   id="id_clave" name="id_clave" class="form-control select2" style="width: 100%;">
                                        <option value="0">SELECIONES UNA OPERACION:</option>
@@ -124,24 +123,14 @@
                                        @endforeach
                     </select>
                 </div>   
-
-                
-
-
-     
-
-                
                 <div class="col-xs-2">
-                  <input type="text" name="comentarios" " id="comentarios" class="form-control" placeholder="Comentarios">
+                  <input type="text" name="comentarios"  id="comentarios" class="form-control" placeholder="Comentarios">
                 </div>
                 <div class="col-xs-2">
                   <button type="button"   id="btnadicionar" class="form-control" onclick="crear()" >Adicionar</button> 
                 </div>
                  
               </div>
-
-
-         
             </div>
           
 
@@ -166,60 +155,59 @@
                   <label>HORAS PLANIFICADAS</label>
                     <input type="text" name="horasPlanificadas" class="form-control" id="horasPlanificadas" readonly="readonly"   >   
                 </div>
+                <div class="col-xs-2">
+                <label></label>
+                  <button type="button"   id="btnadicionarh" class="form-control" onclick="crear2()" >Adicionar Horas </button> 
+                </div>
+
               </div>
             </div>
       </div>
 
     <div class="box box-default">
-  	<div class="box-header with-border">
-  	 		<h3 class="box-title">Registro Empleados</h3>
+    <div class="box-header with-border">
+        <h3 class="box-title">Registro Empleados</h3>
 
           <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           
           </div>
-  	 	</div>
-  	 	  <div class="box-body">
+    </div>
+        <div class="box-body">
          
-
-
 
 
               <div class="row">
                 <div class="col-xs-4">
                   <input type="text" class="form-control" name="searchempleado"  placeholder="Codigo o Nombre" id="searchempleado">
-                </div>
-              
-              
-                
-              <div class="col-xs-3">
+                </div>   
+                 <div class="col-xs-3">
                   <select id="id_rol" name="id_rol" class="form-control select2" style="width: 100%;">
                   <option selected="selected">Operario</option>
                   <option>Lider</option>
                   <option>Supervisor</option>
                   </select>
-              </div>
+                </div>
 
-               <input type="hidden" name="id_empleado" id="id_empleado" value="" />
-                <input type="hidden" name="nombre" id="nombre" value="" />
+                <input type="hidden" name="id_empleado" id="id_empleado" value="">
+                <input type="hidden" name="nombre" id="nombre" value="">
 
                 <div class="col-xs-3">
-                  <input type="number" id="participacion" name="participacion" min="10" max="100" required="required" 
+                  <input type="number" id="participacion" name="participacion" min="10" max="100" required="required" value="100"
                   class="form-control select2" placeholder="Participacion" >
-                  
-                  </select>
-              </div>
-
-
-              <div class="col-xs-2">
-                  <button type="" class="form-control" onclick="crearemple()" >Adicionar</button> 
-              </div>
+                </div>
+                <div class="col-xs-2">
+                  <button type="button"   id="btncrearEmpleado" class="form-control" onclick="crearemple()" >Adicionar</button> 
+                </div>
             
-               <div id="lista_empleados"></div>
+              
+      </div>
+      <div id="lista_empleados"></div>
       </div>
 
     <div class="box box-default">
       <div class="box-header with-border">
+
         <h3 class="box-title">Registro de Produccion</h3>
 
           <div class="box-tools pull-right">
@@ -240,7 +228,7 @@
           
            <div class="form-group">
                         <label>PRODUCCION : </label>
-                        <input id="produccion" name="produccion" type="number" class="form-control"  value=0.0 onchange="produccion();" >
+                        <input id="produccion" name="produccion" type="number" class="form-control"  value=0.0 " >
                       </div>
                  <div class="form-group">
                         <label>DESPERDICIO RECUPERABLE : </label>
@@ -269,11 +257,27 @@
                           <input id="total" name="total" type="number" class="form-control"  readonly="readonly" >
                          </div>
 
-                           <div class="form-group ">                                  
-                                    <input type="button" onmouseover="this.backgroundColor='blue' "  style="width: 525px; height:40px ; display:none;" name="aprobar" id="aprobar"  value="Aprobar Produccion" onclick="yy()" >
-                            
-                          
-                           
+                          <div class="form-group ">                                  
+                                    
+                                          
+                                    <button type="button" name="aprobar" id="aprobar" style=" display:none;"  onclick="yy()" 
+                                     class="btn btn-default btn-lg" title="Aprobar Registro de MO" >
+                                     <span class="glyphicon glyphicon-floppy-saved" >
+                                     </span> Aprobar Registro de M.O. </button>  
+                                      
+                         </div>
+                         <div class="form-group">                                  
+                       
+
+                                  <button type="button" 
+                                           name="aprobarproduccion" 
+                                           id="aprobarproduccion" 
+                                           style="display:none;" 
+                                           onclick="AprobarProduccion1()"
+                                    class="btn btn-default btn-lg" title="Confirmar Registro de MO">
+                                     <span class="glyphicon glyphicon-floppy-save">
+                                    </span> Confirmar Registro de MO
+                                  </button>             
                          </div>
                             
              </div>
@@ -355,11 +359,14 @@ $('#produccion').on('change',function ()
 
 $('#desrecuperable').on('change',function () 
 {
+   $("#total").val(0);
+  var desperdicio2= document.getElementById("desnorecuperable").value;
   var desperdicio= document.getElementById("desrecuperable").value;
-  var produccion=document.getElementById("total").value;
+  var produccion=document.getElementById("produccion").value;
 
-  var total=parseFloat(produccion)+parseFloat(desperdicio);
+  var total=parseFloat(produccion)+parseFloat(desperdicio)+parseFloat(desperdicio2);
    
+
    $("#total").val(total);
 
  
@@ -367,10 +374,12 @@ $('#desrecuperable').on('change',function ()
 
 $('#desnorecuperable').on('change',function () 
 {
-  var desperdicio= document.getElementById("desnorecuperable").value;
-  var produccion=document.getElementById("total").value;
+   $("#total").val(0);
+   var desperdicio= document.getElementById("desrecuperable").value; 
+  var desperdicio2= document.getElementById("desnorecuperable").value;
+  var produccion=document.getElementById("produccion").value;
 
-  var total=parseFloat(produccion)+parseFloat(desperdicio);
+  var total=parseFloat(produccion)+parseFloat(desperdicio)+parseFloat(desperdicio2);
    
    $("#total").val(total);
 
@@ -464,7 +473,6 @@ var id3= document.getElementById("id_operacion").value;
 var urlraiz=$("#url_raiz_proyecto").val();
 var miurl =urlraiz+"/registro/horasplanificadas";
 
-
 $.ajax({
   type:'get',
   url:miurl,
@@ -513,8 +521,8 @@ $.ajax({
     $('#lista_empleados').empty().html(data);
   }
  });
-
 }
+
 function listarproduccion(){
 var id= document.getElementById("norden").value;
 var id2= document.getElementById("id_turno").value;
@@ -526,12 +534,32 @@ var miurl =urlraiz+"/registro/listarproduccion";
 $.ajax({
   type:'get',
   url:miurl,
-  data:{id:id,id2:id2,id3:id3}
- }).done(function(data)
-  {
-    var content=JSON.parse(data);
-     $("#produccion").val( content[0].PRODUCCION);   
-  })
+  data:{id:id,id2:id2,id3:id3},
+  success:function(resul){
+     
+    if(resul.PRODUCCION==null ){
+     
+    $('#produccion').val(0.00);
+    $('#desrecuperable').val(0.00);
+    $('#desnorecuperable').val(0.00);
+    $('#eficiencia').val(0.00);
+    $('#total').val(0.00);
+     document.getElementById("aprobar").style.display='none';
+     document.getElementById("aprobarproduccion").style.display='none';
+    }else{
+     $('#produccion').val(resul.PRODUCCION);
+    $('#desrecuperable').val(resul.DESPERDICIORECU);
+    $('#desnorecuperable').val(resul.DESPERDICIONORECU);
+    $('#eficiencia').val(resul.EFICIENCIA);
+    $('#total').val(resul.TOTAL);
+      document.getElementById("aprobar").style.display='block';
+      document.getElementById("aprobarproduccion").style.display='block';
+      document.getElementById("aprobar").value='Actualizar Produduccion';
+       
+    }
+    
+  }
+ });
 
 } 
 
@@ -553,20 +581,42 @@ function actualizar(){
   
 
   function restarHoras(){
-   inicio=document.getElementById("hora1").value;
-   fin=document.getElementById("hora2").value;
+    
+   var inicio=document.getElementById("hora1").value;
+   var fin=document.getElementById("hora2").value;
    var id= document.getElementById("horasPlanificadas").value;
    var horastrabajadas=document.getElementById("total_horas").value;
    horast=parseInt(horastrabajadas.substr(0,2));
 
-   inicioMinutos=parseInt(inicio.substr(3,2));
+  
    inicioHoras=parseInt(inicio.substr(0,2));
 
-   finMinutos=parseInt(fin.substr(3,2));
+
+    if(inicio>fin){
+
+      inicioHoras=24-inicioHoras;
+           inicioMinutos=parseInt(inicio.substr(3,2));
+  finMinutos=parseInt(fin.substr(3,2));
    finHoras=parseInt(fin.substr(0,2));
 
    transcurridoMinutos=finMinutos-inicioMinutos;
-   transcurridoHoras=finHoras-inicioHoras;
+   transcurridoHoras=finHoras+inicioHoras;
+
+    }else{
+
+       inicioHoras=parseInt(inicio.substr(0,2));
+            inicioMinutos=parseInt(inicio.substr(3,2));
+  finMinutos=parseInt(fin.substr(3,2));
+   finHoras=parseInt(fin.substr(0,2));
+
+   transcurridoMinutos=finMinutos-inicioMinutos;
+   transcurridoHoras=finHoras-inicioHoras;  
+
+    }
+
+
+
+
 
    if(transcurridoMinutos<0){
     transcurridoHoras--;
@@ -575,13 +625,13 @@ function actualizar(){
    horas=transcurridoHoras.toString();
    minutos=transcurridoMinutos.toString();
    total01=horast+transcurridoHoras
-    
+
    if(total01>id){
     document.getElementById("btnadicionar").disabled=true;
     document.getElementById("comentarios").disabled=true;
     document.getElementById("id_clave").disabled=true;
     
-    alert('A superado la Cantidad de Horas Planificadas Solicitar Aumento de Horas....');
+    window.alert('A superado la Cantidad de Horas Planificadas Solicitar Aumento de Horas....');
 
    }else{
 
@@ -596,10 +646,12 @@ function actualizar(){
    if(minutos.length<2){
     minutos="0"+minutos;
    }
+    }
+
 
    document.getElementById("horatotal").value=horas+":"+minutos;
     
-   }
+  
 
    
    
@@ -607,7 +659,7 @@ function actualizar(){
   }
 
 
-  function crear(){
+function crear(){
     var id=document.getElementById("horatotal").value;
 
     if (id==""){
@@ -635,22 +687,35 @@ function actualizar(){
 
   });
 
+ }
 }
-  }
-   function yy(){
-    //var id2= document.getElementById("id_turno").value;
-    //var dataString=$('#form_registrohoras').serialize();
-    //var urlraiz=$("#url_raiz_proyecto").val();  
-   //var miurl =urlraiz+"/registro/aprobar/"+id2+"";
-     
-  
-  //$.ajax({
-    // url:miurl,
-    //data:dataString,
-  //}).done(function(data){
-   
 
- // });
+function crear2(){
+ 
+    var dataString=$('#form_registrohoras').serialize();
+    var urlraiz=$("#url_raiz_proyecto").val();
+     var miurl =urlraiz+"/registro/agregar2/";
+    
+  
+  $.ajax({
+     url:miurl,
+    data:dataString,
+  }).done(function(data){
+    listhoras();
+    totalHoras();
+    horasPerdidas();
+    horasTrabajadas();
+    document.getElementById("hora1").value="";
+    document.getElementById("hora2").value="";
+    document.getElementById("horatotal").value="";
+    document.getElementById("comentarios").value="";
+  });
+
+ 
+}
+
+
+function yy(){
 
 var dataString=$('#form_registrohoras').serialize();
     var urlraiz=$("#url_raiz_proyecto").val();
@@ -669,12 +734,41 @@ var dataString=$('#form_registrohoras').serialize();
 
   });
 
+   alert('Se actualizo Correctamente');
 
+   actualizar();
 
 
 
   }
 
+function AprobarProduccion1(){
+   
+
+var dataString=$('#form_registrohoras').serialize();
+    var urlraiz=$("#url_raiz_proyecto").val();
+     var miurl =urlraiz+"/registro/aprobarproduccion/";
+    
+  
+  $.ajax({
+     url:miurl,
+    data:dataString,
+  }).done(function(data){
+    //listaempleados();
+    //document.getElementById("searchempleado").value="";
+    //document.getElementById("nombre").value="";
+    
+
+
+  });
+
+   alert('Se Aprobo Existosamente');
+
+   actualizar();
+
+
+
+  }
 
 
 
@@ -689,8 +783,8 @@ var dataString=$('#form_registrohoras').serialize();
     data:dataString,
   }).done(function(data){
     listaempleados();
-    document.getElementById("searchempleado").value="";
-    document.getElementById("nombre").value="";
+   document.getElementById("searchempleado").value="";
+   document.getElementById("nombre").value="";
     
 
 

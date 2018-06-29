@@ -61,8 +61,9 @@
                 <ul class="treeview-menu">
                     <li><a href="{{url('ventas')}}">Pedidos</a></li>
                      <li><a href="{{url('Ticket')}}">Ticket</a></li>
-                     <li><a href="{{url('gantt')}}">Gantt</a></li>
-                     <li><a href="{{url('scheduler')}}">Calendario Horizontal</a></li>
+                    
+                     <li><a href="{{url('scheduler')}}">Calendario</a></li>
+                    <li><a href="#">Pedidos</a></li>
                     <li><a href="{{url('ConsultaProduccion')}}">Ordenes de Produccion</a></li>
                 </ul>
             </li>

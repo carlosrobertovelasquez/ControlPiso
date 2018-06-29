@@ -26,8 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/respuesta',function(){
         return view('ControPiso.response');
     });
-	
-	Route::get('/home', 'HomeController@index');
+    
+    Route::get('/home', 'HomeController@index');
     Route::get('/listado_usuarios', 'UsuariosController@listado_usuarios');
     Route::get('/listado_correo', 'UsuariosController@listado_correo');
     Route::post('crear_usuario', 'UsuariosController@crear_usuario');
@@ -67,10 +67,12 @@ Route::group(['middleware' => 'auth'], function () {
 
   Route::get('Produccion',['uses'=>'OrdenProduccionController@index','as'=>'Produccion.index'] );
 Route::get('ConsultaProduccion',['uses'=>'OrdenProduccionController@ConsultaProduccion', 'as'=>'ConsultaProduccion']);  
+Route::get('ListaRegistros/{id}',['uses'=>'OrdenProduccionController@ListaRegistros', 'as'=>'ListaRegistros']);  
 Route::get('EliminarProduccion/{id}',['uses'=>'OrdenProduccionController@EliminarProduccion', 'as'=>'EliminarProduccion']);  
   //planificador
  Route::get('Planificacion/{id}', ['uses'=>'OrdenProduccionController@planificacion','as'=>'planificacion']);
-Route::get('planificar/{id}/{id4}/{id5}/{id6}/{id8}', ['uses'=>'OrdenProduccionController@planificar','as'=>'planificar']);
+Route::get('planificar', ['uses'=>'OrdenProduccionController@planificar2','as'=>'planificar']);
+//Route::get('planificar2/{id}/{id4}/{id5}/{id6}/{id8}', ['uses'=>'OrdenProduccionController@planificar2','as'=>'planificar2']);
 Route::get('guardar_planificacion', ['uses'=>'OrdenProduccionController@guardar_planificacion','as'=>'guardar_planificacion']);
 
  Route::get('ConsultaPedidos/{id}',['uses'=>'OrdenProduccionController@ConsultaPedidos', 'as'=>'ConsultaPedidos']);
@@ -89,6 +91,7 @@ Route::get('viajero/{id}',['uses'=>'OrdenProduccionController@viajero', 'as'=>'v
  Route::get('planificador/estadoa/{id}', ['uses'=>'PlanificarController@estadoA', 'as'=>'planificar.estadoA']) ;
  Route::get('planificador/estadob/{id}', ['uses'=>'PlanificarController@estadoB', 'as'=>'planificar.estadoB']) ;
  Route::get('planificador/procesos', ['uses'=>'PlanificarController@procesos', 'as'=>'planificar.procesos']) ;
+ Route::get('planificador/cambiohora', ['uses'=>'PlanificarController@CambioHora', 'as'=>'planificar.cambiohora']) ;
 
 
 
@@ -99,6 +102,7 @@ Route::get('registro/ma/{id}/{id2}',['uses'=>'RegistroController@ma', 'as'=>'reg
 Route::get('registro/impresion/{id}/{id2}',['uses'=>'RegistroController@impresion', 'as'=>'registro.impresion']);
 Route::get('registro/listarhoras',['uses'=>'RegistroController@listarhoras', 'as'=>'registro.listarhoras']);
 Route::get('registro/listaremple',['uses'=>'RegistroController@listaremple', 'as'=>'registro.listaremple']);
+Route::get('registro/listaroperaciones',['uses'=>'RegistroController@listaroperaciones', 'as'=>'registro.listaroperaciones']);
 Route::get('registro/listarproduccion',['uses'=>'RegistroController@listarproduccion', 'as'=>'registro.listarproduccion']);
 Route::get('registro/totalhoras',['uses'=>'RegistroController@totalhoras', 'as'=>'registro.totalhoras']);
 Route::get('registro/tiempoPerdido',['uses'=>'RegistroController@tiempoPerdido', 'as'=>'registro.tiempoPerdido']);
@@ -107,14 +111,22 @@ Route::get('registro/metaxTurno',['uses'=>'RegistroController@metaxTurno', 'as'=
 Route::get('registro/horasplanificadas',['uses'=>'RegistroController@horasplanificadas', 'as'=>'registro.horasplanificadas']);
 Route::get('registro/aprobar/{id2}',['uses'=>'RegistroController@aprobar', 'as'=>'registro.aprobar']);
 
+Route::get('registro/agregar2/',['uses'=>'RegistroController@agregar2', 'as'=>'registro.agregar2']);
 Route::get('registro/agregar/',['uses'=>'RegistroController@agregar', 'as'=>'registro.agregar']);
 Route::get('registro/agregaremple/',['uses'=>'RegistroController@agregaremple', 'as'=>'registro.agregaremple']);
 Route::get('registro/agregarproduccion/',['uses'=>'RegistroController@agregarproduccion', 'as'=>'registro.agregarproduccion']);
 Route::get('registro/eliminar/{id}',['uses'=>'RegistroController@eliminar', 'as'=>'registro.eliminar']);
 Route::get('registro/eliminaremple/{id}',['uses'=>'RegistroController@eliminaremple', 'as'=>'registro.eliminaremple']);
+Route::get('registro/eliminarconsumo/{id}/{id2}/',['uses'=>'RegistroController@eliminarconsumo', 'as'=>'registro.eliminarconsumo']);
 Route::get('registro/buscarempleado/', ['uses'=>'RegistroController@buscarempleado','as'=>'registro.buscarempleado']);
-Route::get('registro/agregarconsumo/{id1}/{id2}/{id3}',['uses'=>'RegistroController@agregarconsumo', 'as'=>'registro.agregarconsumo']);
-Route::get('registro/eliminarconsumo/{id1}',['uses'=>'RegistroController@eliminarconsumo', 'as'=>'registro.eliminarconsumo']);
+Route::get('registro/buscararticulo/', ['uses'=>'RegistroController@buscararticulo','as'=>'registro.buscararticulo']);
+Route::get('registro/agregarconsumo/',['uses'=>'RegistroController@agregarconsumo', 'as'=>'registro.agregarconsumo']);
+Route::get('registro/crearconsumo/{id}/{id2}/',['uses'=>'RegistroController@crearconsumo', 'as'=>'registro.crearconsumo']);
+Route::get('registro/aprobarconsumo/{id}/{id2}/',['uses'=>'RegistroController@aprobarconsumo', 'as'=>'registro.aprobarconsumo']);
+Route::get('registro/aprobarproduccion/',['uses'=>'RegistroController@aprobarproduccion', 'as'=>'registro.aprobarproduccion']);
+Route::get('registro/confirmarproduccion/{id}/{id2}/',['uses'=>'RegistroController@confirmarproduccion', 'as'=>'registro.confirmarproduccion']);
+Route::get('registro/conformeconsumo/{id}',['uses'=>'RegistroController@conformeconsumo', 'as'=>'registro.conformeconsumo']);
+Route::get('registro/confirmarconsumo/{id}/{id2}/',['uses'=>'RegistroController@confirmarconsumo', 'as'=>'registro.confirmarconsumo']);
 Route::get('registro/listarconsumo',['uses'=>'RegistroController@listarconsumo', 'as'=>'registro.listarconsumo']);
 
 //turno
@@ -170,7 +182,3 @@ Route::get('ficha_tecnicaInyeccionEdit/{id}',['uses'=>'FichaTecnicaController@Fi
 Route::get('ficha_tecnicaPala/{id}',['uses'=>'FichaTecnicaController@FichaTecnicaPala','as'=>'Ficha_TecnicaPala']);
 Route::get('ficha_tecnicaPalaEdit/{id}',['uses'=>'FichaTecnicaController@FichaTecnicaPalaEdit','as'=>'Ficha_TecnicaPalaEdit']);
 });
-
-
-
-

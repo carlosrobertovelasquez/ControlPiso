@@ -45,11 +45,9 @@
             <!-- Small boxes (Stat box) -->
 
             <div class="row">
-              <?php
-                        $modal=0;
-                        ?>
+             
                 @foreach($OrdenProduccion as $OrdenProduccion)
-                <div class="col-lg-3 col-xs-6">
+                <div class="col-lg-4 col-xs-8">
           
                 
                       @if($OrdenProduccion->estado=='P')
@@ -68,44 +66,7 @@
                       @endif
 
     
-    <div class="modal fade" id="addComment{{ $modal}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
-        <div class="modal-dialog" role="document">
-           <div class="modal-content" style="background-color:blue;">
-            <div class="modal-header" >
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h2 class="modal-title" id="myModalLabel">
-                            REGISTRO DE MANO DE OBRA 
-                            ORDEN DE PRODUCCION:{{ $OrdenProduccion->ordenproduccion}}
-                        </h2>
-            </div>
-            <div class="modal-body">
-            <form method="post" action="#" style="font-size:14px">
-
-             {{csrf_field()}}
-                        <div class="form-group">
-                        <div class="form-group row">                            
-                             <label class="mr-sm-12"> Factura :</label>
-                               <textarea name="id_factura" rows="1" class="form-control"></textarea>
-                            
-                            </div>
-                        <input type="hidden" name="id_flete" value="{{ $OrdenProduccion->ordenproduccion}}" />     
-
-                        
-                        </div>
-                        
-
-
-                        <button type="submit" class="btn btn-primary">Agregar</button>
-            </form>
-            <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-            </div>            
-
-            </div>
-           </div>
-
-        </div>
-    </div>                         
+                     
 
         
 
@@ -147,13 +108,13 @@
                                      <a href="{{route('planificar.estadoP',$OrdenProduccion->id)}}" class="btn btn-raised btn-warning">Planificado</a>
                                    
                             @elseif($OrdenProduccion->estado=='A')
-                                <a href="{{route('planificar.estadoA',$OrdenProduccion->id)}}" class="btn btn-raised btn-danger">En Produ.</a>
+                                <a href="#" class="btn btn-raised btn-danger">En Produccion</a>
 
                                 
 
                             @elseif($OrdenProduccion->estado=='B')
                                 
-                                  <a href="{{route('planificar.estadoB',$OrdenProduccion->id)}}" class="btn btn-raised btn-info">Liquidado</a>
+                                  <a href="{{route('planificar.estadoB',$OrdenProduccion->id)}}" class="btn btn-raised btn-info">Liquidado  </a>
 
                             @endif
                            
@@ -163,7 +124,7 @@
                     </div>
 
                 </div><!-- ./col -->
-                  <?php $modal++?>
+               
                 @endforeach
             </div><!-- /.row -->
 @endsection

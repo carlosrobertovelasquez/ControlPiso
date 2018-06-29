@@ -24,7 +24,7 @@
                       <div class="form-group">
              
                 </div>
-              <table id="example1" class="display compact"   >
+              <table id="example1" class="display nowrap"  style="width:95%" >
                 <thead>
                 <tr>
                   <th>Id</th>

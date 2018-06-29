@@ -21,7 +21,7 @@
           
             <!-- /.box-header -->
                 <div class="table-responsive" >
-                  <table id="example1" class="display compact"    >
+                  <table id="example1" class="display nowrap"    >
                     <thead>
                         <tr>
                           <th>PEDIDO</th>
@@ -44,8 +44,7 @@
                                 <td >{{ $ventas->NOMBRE }}</td> 
                                 <td>{{ $ventas->ARTICULO }}</td> 
                                 <td>{{$ventas->DESCRIPCION}}</td>
-                                <td> {{ Carbon\Carbon::parse($ventas->FECHA_PROMETIDA)->format('d-m-Y H:i:s') }}</td>
-
+                                <td>{{$ventas->FECHA_PROMETIDA}}</td>
                                 <td>{{ number_format($ventas->CANTIDAD_PEDIDA ,2)}}</td>              
                         </tr>
                       @endforeach

@@ -9,11 +9,10 @@
 <link href="http://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet"/>
 
 
-
 <div class="container">
   <div class="row">
     <div  class="col-md-12">
-       
+    <a href=" {{url('Produccion')}}" ><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>
           <input type="hidden" name="_token" value="{{csrf_token()}}">
           <div class="box box-default">
               <div class="box-header with-border">
@@ -329,11 +328,12 @@ $('#showModal').on('hidden.bs.modal',function(e){
 //Consulta de Centro de Costo
 $('#id_centrocosto').on('change',function () 
 {
-
   
   var id =$('#id_centrocosto').val();
   var id2=$('#articulo').val();
   var id3=$('#Mid_opera').val();
+ 
+    alert(ope);
   var urlraiz=$("#url_raiz_proyecto").val();
   var miurl =urlraiz+"/ConsultaMaquina/";
 
@@ -545,7 +545,8 @@ procesos2();
   var id7=$("#idm_totalturnos").val();
 
   var urlraiz=$("#url_raiz_proyecto").val();
-  var miurl =urlraiz+"/planificar/"+id+"/"+id4+"/"+id5+"/"+id6+"/"+id8+"";
+  //var miurl =urlraiz+"/planificar/"+id+"/"+id4+"/"+id5+"/"+id6+"/"+id8+"";
+  var miurl =urlraiz+"/planificar/";
 
   
   var d='<tr>'+
@@ -830,9 +831,9 @@ $(document).on('click','.show-modal',function(e){
    $('#showModal').modal('hide');
   }else{
 
-var art=document.getElementById("articulo").value;
+var art=document.getElementById("articulo").value;// ARTICULO
   var cant=document.getElementById("id_cantidadaproducir").value;
-  var ope=$(this).data('id');
+  var ope=$(this).data('id');// OPERACION
   var ope2=$(this).data('id2');
 
   var sec=$(this).data('title');
@@ -873,7 +874,8 @@ function AppendMaquinas(art,ope){
   
 
   //alert(art+ope);
-
+  var dropDown = document.getElementById("id_centrocosto");
+        dropDown.selectedIndex = 0;
    var urlraiz=$("#url_raiz_proyecto").val();
   var miurl =urlraiz+"/ListarArticuloOperacion/";
 

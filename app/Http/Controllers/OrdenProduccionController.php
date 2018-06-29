@@ -14,6 +14,7 @@ use App\Modelos\ControlPiso\CP_ENCABEZADOPLANIFICACION;
 use App\Modelos\ControlPiso\CP_DETALLEPLANIFICACION;
 use App\Modelos\ControlPiso\CP_PLANIFICACION;
 use App\Modelos\ControlPiso\CP_tasks;
+use App\Modelos\Softland\OP_OPERACION;
 use App\Modelos\ControlPiso\CP_events;
 use App\Modelos\Softland\ESTRUC_PROCESO;
 use App\Modelos\ControlPiso\CP_globales;
@@ -43,6 +44,34 @@ class OrdenProduccionController extends Controller
     public function index()
     {
       
+
+        // cargamos en la tabla temporal para poner las ordenes de produccion
+        /*
+
+        $ordenes=DB::Connection()->select("SELECT OP.ORDEN_PRODUCCION, OP.ARTICULO,ART.DESCRIPCION, OP.REFERENCIA, OP.CANTIDAD_ARTICULO, OP.FECHA_REQUERIDA, OP.FECHA_CREACION,0.00 
+         FROM 
+         IBERPLAS.ORDEN_PRODUCCION OP,
+         IBERPLAS.ARTICULO ART
+         WHERE 
+         ART.ARTICULO=OP.ARTICULO AND
+         OP.ESTADO in ('F','L') 
+         and OP.ORDEN_PRODUCCION not in (select ORDEN_PRODUCCION from IBERPLAS.CP_TCargaOrdenProduccion)");
+
+        foreach ($ordenes as $value) {
+          //Guardamos en la Tabla CP_Tcargar si existen registros.
+           $plantemp=new CP_TCargaOrdenProduccion;
+           $plantemp->ORDEN_PRODUCCION=$value->ORDEN_PRODUCCION;
+           $plantem->ARTICULO=$value->ARTICULO;
+           $plantem->DESCRIPCION=$value->DESCRIPCION; 
+           $plantem->REFERENCIA=$value->REFERENCIA;
+           $plantem->CANTIDAD_ARTICULO=$value->CANTIDAD_ARTICULO;
+           $plantem->FECHA_REQUERIDA=$value->FECHA_REQUERIDA;
+           $plantem->FECHA_CREACION=$value->FECHA_CREACION;
+           $plantem->CANTIDAD_PRODUCCI=$value->CANTIDAD_PRODUCCI;
+           $plantemp->save();
+
+        }
+        */
       
         $OrdenProduccion=CP_TCargaOrdenProduccion::whereColumn('CANTIDAD_ARTICULO','>','CANTIDAD_PRODUCCI')->get();
         return view('ControPiso.Transacciones.listado_orden_produccion')
@@ -64,9 +93,119 @@ class OrdenProduccionController extends Controller
 
     public function ConsultaProduccion(){
 
-      $OrdenProduccion=CP_PLANIFICACION::all();
+      
+      $OrdenProduccion=CP_PLANIFICACION::where('VersionEstado','=','A')->get();
        return view('ControPiso.Consulta.orderproduccion')
                ->with('OrdenProduccion',$OrdenProduccion);
+    }
+
+    public function Listaregistros($id){
+
+     
+    $ordenproduccion=CP_PLANIFICACION::where('id','=',$id)->select('ordenproduccion','operacion')->first();
+
+    $opera2=OP_OPERACION::where('ORDEN_PRODUCCION','=',$ordenproduccion->ordenproduccion)->
+      where('DESCRIPCION','=',$ordenproduccion->operacion)->get();
+  
+       
+      
+      foreach ($opera2 as $value) {
+        
+             $opera3=$value->OPERACION;
+      }
+
+     $orden=$ordenproduccion->ordenproduccion;
+  
+
+     $cp_planificacion=CP_PLANIFICACION::where('id','=',$id)->get();
+     $registroEmpleados=DB::Connection()->select("select pl.turno,re.EMPLEADO,re.NOMBRE,re.OPERACION,re.ROL,re.PARTICIPACION,pl.fhoraini,pl.fhorafin
+     from 
+     IBERPLAS.CP_REGISTROEMPLEADOS re,
+     IBERPLAS.CP_ENCABEZADOPLANIFICACION pl
+     where re.TURNO=pl.id and
+     pl.planificacion_id='$id'
+     order by pl.id");
+   
+     $registroHoras=DB::Connection()->select("select pl.turno,re.OPERACION,re.OPERA,re.HORAINICIO,re.HORAFIN,re.TIEMPO,re.CLAVE,re.COMENTARIOS, pl.fhoraini,pl.fhorafin
+     from 
+     IBERPLAS.CP_REGISTROHORAS re,
+     IBERPLAS.CP_ENCABEZADOPLANIFICACION pl
+     where re.TURNO=pl.id and
+     pl.planificacion_id='$id'
+     order by pl.id");
+
+     $registroProduccion=DB::Connection()->select("select pl.turno,re.OPERACION,re.CICLOPIEZA,re.METATURNO,re.PRODUCCION,re.EFICIENCIA,re.DESPERDICIONORECU,re.DESPERDICIORECU,re.TOTAL ,pl.fhoraini,pl.fhorafin
+     from 
+     IBERPLAS.CP_REGISTROPRODUCCION re,
+     IBERPLAS.CP_ENCABEZADOPLANIFICACION pl
+     where re.TURNO=pl.id and
+     pl.planificacion_id='$id'
+     order by pl.id");
+     $registroConsumos=DB::Connection()->select("select articulo,descripcion,cantidad,operacion,aprobada as entregada,conforme as recibida ,comentarios,cantidad_viajero,origen from IBERPLAS.CP_consumo where planificacion_id='$id'");
+
+     $totalConsumo=DB::Connection()->select("
+      select SUM(cantidad) as cantidadC 
+      from IBERPLAS.CP_consumo where planificacion_id='$id'");
+
+     foreach ($totalConsumo as  $value) {
+       # code...
+      $totalConsumo=$value->cantidadC;
+     }
+
+     $totalviajero=DB::Connection()->select("
+      select sum(cons.CANTIDAD_ESTANDAR) as cantidadV from 
+            IBERPLAS.OP_OPER_CONSUMO cons,
+                IBERPLAS.ARTICULO art 
+                where 
+                cons.ARTICULO=art.ARTICULO and
+                cons.ORDEN_PRODUCCION='$orden' and cons.OPERACION='$opera3' ");
+     foreach ($totalviajero as  $value) {
+       # code...
+      $totalviajero=$value->cantidadV;
+     }
+     
+     $totalesproduccion=DB::Connection()->select("select 
+sum(METATURNO) as meta,
+SUM(PRODUCCION) as produccion, 
+SUM(DESPERDICIONORECU) as desno,
+SUM(DESPERDICIORECU) as desrec ,
+SUM(TOTAL) as total 
+from IBERPLAS.CP_REGISTROPRODUCCION where planificador_id='$id'");
+
+     foreach ($totalesproduccion as  $value) {
+       # code..
+      $meta=$value->meta;
+      $produccion=$value->produccion;
+      $desno=$value->desno;
+      $desrec=$value->desrec;
+      $total=$value->total;
+     }
+$produccionnoregistrada=DB::Connection()->select("  select turno,fhoraini,fhorafin,cantidad from IBERPLAS.CP_ENCABEZADOPLANIFICACION where planificacion_id='$id' and  id not in
+    (select Turno from IBERPLAS.CP_REGISTROPRODUCCION where planificador_id='$id')");
+$horasnoregistradas=DB::Connection()->select(" select turno,fhoraini,fhorafin,horas from IBERPLAS.CP_ENCABEZADOPLANIFICACION where planificacion_id='$id' and  id not in
+    (select Turno from IBERPLAS.CP_REGISTROhoras where planificador_id='$id')");
+
+
+$empleadonoregistados=DB::Connection()->select("   select turno,fhoraini,fhorafin from IBERPLAS.CP_ENCABEZADOPLANIFICACION where planificacion_id='$id' and  id not in
+    (select Turno from IBERPLAS.CP_REGISTROEMPLEADOS where planificador_id='$id')");
+
+     return view('ControPiso.Consulta.Ordenproduccion.ListadeRegistros')
+               ->with('cp_planificacion',$cp_planificacion)
+               ->with('registroEmpleados', $registroEmpleados)
+               ->with('registroHoras',$registroHoras)
+               ->with('registroProduccion',$registroProduccion)
+                ->with('registroConsumos',$registroConsumos)
+                ->with('totalConsumo',$totalConsumo)
+                ->with('totalviajero',$totalviajero)
+                ->with('meta',$meta)
+                ->with('produccion',$produccion)
+                ->with('desno',$desno)
+                ->with('desrec',$desrec)
+                ->with('produccionnoregistrada',$produccionnoregistrada)
+                ->with('horasnoregistradas',$horasnoregistradas)
+                ->with('empleadonoregistados',$empleadonoregistados)
+                ->with('total',$total);
+
     }
     /**
      * Show the form for creating a new resource.
@@ -167,7 +306,6 @@ class OrdenProduccionController extends Controller
               ->with('centrocosto',$centrocosto)
               ->with('ft_ficha',$ft_ficha);
           }else{
-
               $ordenproduccion=CP_TCargaOrdenProduccion::where('ORDEN_PRODUCCION', $id)->first();;
               $articulordproduccion=$ordenproduccion->ARTICULO;
               $pedido=PEDIDO::where('ESTADO','=','A')->orderby('PEDIDO','asc')->get();
@@ -234,6 +372,7 @@ class OrdenProduccionController extends Controller
             RUBRO.VERSION IN (SELECT VERSION FROM IBERPLAS.ESTRUC_MANUFACTURA WHERE ESTADO='A' AND ARTICULO='$id2')
       ");
 
+
      //  dd($centrocosto);
       return json_encode($centrocosto);
 
@@ -251,11 +390,23 @@ class OrdenProduccionController extends Controller
       return json_encode($centrocosto);
     }
 
-
-    public function planificar($id,$id4,$id5,$id6,$id8,Request $request){
+    //public function planificar($id,$id4,$id5,$id6,$id8,Request $request){
+    public function planificar2(Request $request){
       
+      
+      $id=$request->idm_totalhoras;
+      $id3=$request->Mid_opera;
+      $id4=$request->id_fecha;
+      $id5=$request->id_hora;
+      $id6=$request->id_centrocosto;
+      $id7=$request->idm_totalturnos;
+      $id8=$request->id_ficha;
+
+
+
     $cantidadproducir=$request->id_cantidadaproducir;
     $id3=$request->Mid_opera;
+
     
     $normal =$request->admin;
 
@@ -269,21 +420,17 @@ class OrdenProduccionController extends Controller
     $ficha_tenica=$id8;
 
 
-   
+  
     
     $hora=date('H',strtotime($id5) );
     $min=date('i',strtotime($id5) );
       
-  
+   
       
         $fechaActual=Carbon::now();
 
-        $nueva=date('Y-d-m', strtotime($id4));
+        $nueva=date('Y-m-d', strtotime($id4));
         $nueva2=date('Y-m-d', strtotime($id4));
-
-
-
-
         
 
 
@@ -296,6 +443,7 @@ class OrdenProduccionController extends Controller
         $core=DB::Connection()->select("select ID from IBERPLAS.CP_CALENDARIO_PLANIFICADOR_detalle
                                       where fecha='$nueva2' and DATEPART(HOUR,hora)='$hora'");
 
+     
                                   
                      
 
@@ -306,9 +454,9 @@ class OrdenProduccionController extends Controller
         foreach ($core as $core) {
           
           $valorinicial=$core->ID;
-          
         }
 
+      
 
         
 
@@ -328,19 +476,20 @@ class OrdenProduccionController extends Controller
                                            //ID  in(
                                           //select calendario_id from IBERPLAS.CP_DETALLEPLANIFICACION
                                           //where centrocosto='$equipo' and fecha='$nueva2' and DATEPART(HOUR,hora)='$hora')");
-        
+
           $disponi=DB::Connection()->select("
                                           select calendario_id from IBERPLAS.CP_DETALLEPLANIFICACION
-                                          where centrocosto='$equipo' and fecha='$nueva2' and DATEPART(HOUR,hora)='$hora'");
+                                          where centrocosto='$equipo' and fecha='$nueva2' and DATEPART(HOUR,hora)='$hora'
+                                          ");
 
-        
-   
-        
+         //dd($disponi);                                 
+       
+
+
         if(count($disponi)>0){
-        
             $inicio=CP_DETALLEPLANIFICACION::where('centrocosto','=',$equipo)->max('calendario_id');    
            $inicioturno=$inicio+1;
-          
+
           if (is_null($normal)){
                
             $arr=array($request->lunes_ta,$request->martes_ta,$request->miercoles_ta,$request->jueves_ta,$request->viernes_ta,$request->sabado_ta,$request->domingo_ta,
@@ -364,13 +513,12 @@ class OrdenProduccionController extends Controller
         } else
         {
        
-           $inicioturno=$valorinicial;
-           
-           
+          $inicioturno=$valorinicial;
+         
           
           if (is_null($normal)){
            // dd('no se admin');
-            //dd('admin no selecionado');
+           // dd('admin no selecionado');
            
           $arr=array($request->lunes_ta,$request->martes_ta,$request->miercoles_ta,$request->jueves_ta,$request->viernes_ta,$request->sabado_ta,$request->domingo_ta,
                     $request->lunes_tb,$request->martes_tb,$request->miercoles_tb,$request->jueves_tb,$request->viernes_tb,$request->sabado_tb,$request->domingo_tb,
@@ -380,7 +528,7 @@ class OrdenProduccionController extends Controller
            $turnosasigados=$this->calcularTurnos($normal,$cantidadproducir,$id8,$cantidadxhora2,$secuencia2,$id6,$id,$inicioturno,$arr, $id3,$id4,$id5,$secuencia,$orden,$cantidadxhora);
 
           }else{
-           
+            //dd('si es admin');
 
              //dd('admin selecionado');
              $arr=array($request->lunes_tad,$request->martes_tad,$request->miercoles_tad,$request->jueves_tad,$request->viernes_tad,$request->sabado_tad,$request->domingo_tad,);
@@ -401,7 +549,6 @@ class OrdenProduccionController extends Controller
     public function calcularTurnos($normal,$cantidadproducir,$id8,$cantidadxhora2,$secuencia2,$id6,$id,$inicioturno,$arr,$id3,$id4,$secuencia,$orden,$cantidadxhora){
         
 
-           $arr2=array_filter($arr, "strlen");
              
          CP_TEMP_PLANIFICACION::where('USUARIOCREACION','=',\Auth::user()->name )
          ->where('operacion','=',$id3)->delete();
@@ -422,46 +569,43 @@ class OrdenProduccionController extends Controller
 
          $tempo=CP_TEMP_PLANIFICACION::where('centrocosto','=',$equipo)->max('calendario_id');
          
-        
-        if($tempo>0){
-           
+         
+         if($tempo>0){
+            
           if (is_null($normal)){
-           /*
+
             $turnos2=CP_CALENDARIO_PLANIFICADOR_DETALLE::whereNull('ESTADO')
             ->where('ID','>',$tempo)
-            ->whereIN('turnodia',$arr2)
+            ->whereIN('turnodia',$arr)
             ->get(); 
-          */
 
-            $turnos2=DB::Connection()->select("select * from IBERPLAS.CP_CALENDARIO_PLANIFICADOR_DETALLE where ESTADO is Null and ID>='$tempo' and turnodia in (".implode(',',$arr2).") and id not in(select calendario_id from IBERPLAS.CP_DETALLEPLANIFICACION where centrocosto='$equipo')");
+          }else{
 
-          }else{}
-            
-             /*
             $turnos2=CP_CALENDARIO_PLANIFICADOR_DETALLE::whereNull('ESTADO')
             ->where('ID','>=',$inicioturno)
             ->where('tipo','=','A')
-            ->whereIN('dia',$arr2)
-            ->get();    
-            */   
-             
-             $turnos2=DB::Connection()->select("select * from IBERPLAS.CP_CALENDARIO_PLANIFICADOR_DETALLE where ESTADO is Null and ID>='$inicioturno' and tipo='A' and dia in (".implode(',',$arr2).") and id not in(select calendario_id from IBERPLAS.CP_DETALLEPLANIFICACION where centrocosto='$equipo')");  
+            ->whereIN('dia',$arr)
+            ->get();
+          }
+
+            
+
+                
+               
 
                // }
          }else{
-           
-
-
+             
+         
           if (is_null($normal)){
-            
-         /*
+           
+           //dd('valor nulo');
            $turnos2=CP_CALENDARIO_PLANIFICADOR_DETALLE::whereNull('ESTADO')
            ->where('ID','>=',$inicioturno)
-           ->whereIN('turnodia',$arr2)
+           ->whereIN('turnodia',$arr)
            ->get();
-          */  
-           
-          $turnos2=DB::Connection()->select("select * from IBERPLAS.CP_CALENDARIO_PLANIFICADOR_DETALLE where ESTADO is Null and ID>='$inicioturno' and turnodia in (".implode(',',$arr2).") and id not in(select calendario_id from IBERPLAS.CP_DETALLEPLANIFICACION where centrocosto='$equipo')");
+            
+         
 
            
      
@@ -469,16 +613,13 @@ class OrdenProduccionController extends Controller
            
            } else {
            // dd('valor no nulo');
-           /*
+           
            $turnos2=CP_CALENDARIO_PLANIFICADOR_DETALLE::whereNull('ESTADO')
           -> where('ID','>=',$inicioturno)
            ->where('tipo','=','A')
-           ->whereIN('dia',$arr2)
+           ->whereIN('dia',$arr)
            ->get();
           // dd($turnos2);
-*/
-
-           $turnos2=DB::Connection()->select("select * from IBERPLAS.CP_CALENDARIO_PLANIFICADOR_DETALLE where ESTADO is Null and ID>='$inicioturno' and tipo='A' and dia in (".implode(',',$arr2).") and id not in(select calendario_id from IBERPLAS.CP_DETALLEPLANIFICACION where centrocosto='$equipo')");
            
      
           
@@ -535,7 +676,8 @@ class OrdenProduccionController extends Controller
               else{ 
              $turno="4";
             };
- 
+
+              
 
                 $plantemp=new CP_TEMP_PLANIFICACION;
                 $plantemp->hora=$turnos->hora;
@@ -565,7 +707,7 @@ class OrdenProduccionController extends Controller
             
          }
         
-        //lo nuevop aqui
+         //lo nuevop aqui
 
          $horafina=DB::Connection()->select("select MAX(calendario_id) maximo, turno,fecha
          from IBERPLAS.CP_TEMP_PLANIFICACION
@@ -580,7 +722,7 @@ class OrdenProduccionController extends Controller
           
            foreach($hora as $hora){
              $hora1=$hora->tiempo;
-             $hora2=$hora->tiempoCalendario;
+             $hora2=date("Y-m-d H:i:s",strtotime($hora->tiempoCalendario));
            }
          
            CP_TEMP_PLANIFICACION::where('calendario_id','=',$maxid)->update(['hora'=>$hora1,'fechaCalendario'=>$hora2]);
@@ -610,7 +752,7 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
           $encatemp->cantidad=$turnos->cantidad;
           $encatemp->turno=$turnos->turno;
           $encatemp->fecha=$turnos->fecha;
-         // $encatemp->fechaCalendario=date("Y-m-d H:i:s",strtotime( $turnos->fechaCalendario));        
+         // $encatemp->fechaCalendario=date("Y-d-m H:i:s",strtotime( $turnos->fechaCalendario));        
           $encatemp->operacion=$turnos->operacion;
           $encatemp->centrocosto=$turnos->centrocosto;
           $encatemp->secuencia=$turnos->secuencia;
@@ -639,29 +781,28 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
          
              foreach ($thoraini as $value) {
 
-               //$nueva2=date('Y-m-d', strtotime($id4));
+               //$nueva2=date('Y-d-m', strtotime($id4));
                $hora=$value->hora;
                $fhora=date('Y-m-d H:i:s',strtotime($value->fechahora));
-                           CP_TEMP_PLANIFICACION_ENCA::where('horaini','=',$horaini)
-                           ->update(['thoraini'=>$hora,'fhoraini'=>$fhora]);
+                           CP_TEMP_PLANIFICACION_ENCA::where('horaini','=',$horaini)->update(['thoraini'=>$hora,'fhoraini'=>$fhora]);
              }
 
               foreach ($thorafin as $value) {
                $hora=$value->hora;
                $fhora=date('Y-m-d H:i:s',strtotime($value->fechahora));
+              
                            CP_TEMP_PLANIFICACION_ENCA::where('horafin','=',$horafin)->update(['thorafin'=>$hora,'fhorafin'=>$fhora]);
              }
 
            }
 
-         
-         //actualizacion de encabezados 04062018
+           //actualizacion de encabezados 04062018
            $fechafin=DB::Connection()->select("select id,  DATEADD(MINUTE,59,thorafin) as thorafin2,
            DATEADD(MINUTE,59,fhorafin) as fhorafin2 from IBERPLAS.CP_TEMP_PLANIFICACION_ENCA");
 
            foreach($fechafin as $fechafin){
              $thorafin=$fechafin->thorafin2;
-             $fhorafin=$fechafin->fhorafin2;
+             $fhorafin=date('Y-m-d H:i:s',strtotime($fechafin->fhorafin2));
              $id=$fechafin->id;
              CP_TEMP_PLANIFICACION_ENCA::where('id','=',$id)->update(['thorafin'=>$thorafin,'fhorafin'=>$fhorafin]);
            }
@@ -711,7 +852,7 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
 
              
               $fechaplanificada=$request->id_fecha;
-              $fechaplanificada=date("d-m-Y", strtotime($fechaplanificada)) ;
+              $fechaplanificada=date("Y-d-m", strtotime($fechaplanificada)) ;
 
                $maximo=CP_PLANIFICACION::max('id');
 
@@ -779,7 +920,7 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
              
 
             // Grabamos el detalle de planificacion
-                  $nueva=date('Y-m-d', strtotime($request->id_fecha));
+                  $nueva=date('Y-d-m', strtotime($request->id_fecha));
 
 
                  $orden_cantidad=CP_TCargaOrdenProduccion::where('ORDEN_PRODUCCION','=',$request->norden)->get();
@@ -823,8 +964,9 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
                  $detall->USUARIOCREACION=\Auth::user()->name;
                  $detall->FECHACREACION=$date;
                  $detall->save();
-
-
+                 
+                
+               
 
                 }              
 
@@ -877,7 +1019,7 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
             $CP_PLANIFICACION->USUARIOCREACION=\Auth::user()->name;
             $CP_PLANIFICACION->FECHACREACION=$date;
             $CP_PLANIFICACION->save();
-             $id2=$CP_PLANIFICACION->id;
+            $id2=$CP_PLANIFICACION->id;
 
             
             $fechafin=DB::Connection()->select(" select id,DATEADD(MINUTE,59,fechamax) as fechamax2,
@@ -886,12 +1028,20 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
 
             CP_PLANIFICACION::where('id','=',$id2)->update(['fechamax'=>date("Y-m-d H:i:s",strtotime($fechafin->fechamax2)),
             'fechaCalendariomax'=>date("Y-m-d H:i:s",strtotime($fechafin->fechaCalendariomax2))]);
-            }
+           
+          }
+
             
            }
+
+           //actualizamos fecha fin
+
+           
             //mandar mail de orden de produccion Planificado
            $ordenproduccion2=$request->norden;
           
+
+
           //para no enviar correo
           $cp_planificacion2=CP_PLANIFICACION::where('ordenproduccion','=',$request->norden)->get();
            $emails=CP_emails::where('email01','=','S')->select('email')->get();  
@@ -964,7 +1114,7 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
 
 
                       
-                      /*
+                     
                       $gannt2=DB::Connection()
                       ->select("select pl.fechaCalendariomin,pl.fechaCalendariomax,('ORDEN='+PL.ordenproduccion+'-'+'ARTICULO='+ART.ARTICULO+'-'+ART.DESCRIPCION) as text,SUBSTRING(pl.centrocosto,7,3) as cc,pl.centrocosto,pl.ordenproduccion 
                         from 
@@ -972,121 +1122,65 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
                         IBERPLAS.ARTICULO ART
                         WHERE 
                         PL.ARTICULO=ART.ARTICULO AND
-                        pl.id='$id'" );
-                     */
-
-
-                        $min=DB::Connection()
-                        ->select("select min(calendario_id) as min from IBERPLAS.cp_detalleplanificacion where planificacion_id='$id'");
-                        $gannt3=DB::Connection()
-                        ->select("select calendario_id,id from IBERPLAS.cp_detalleplanificacion where planificacion_id='$id'");
-                       
-                        
-                      foreach ($min as  $value) {
-                        $min2=$value->min;
-                      }
-                       
-                      $bloque=0;
-                        foreach ($gannt3 as $value) {
-                             
-                           if ($value->calendario_id==$min2++){
-                                CP_DETALLEPLANIFICACION::where('id','=',$value->id)->update(['bloque'=>$bloque]);
-                           }else{
-                              $bloque=$bloque+1;
-
-                              
-                                CP_DETALLEPLANIFICACION::where('id','=',$value->id)->update(['bloque'=>$bloque]);
-                             
-                           };
-
-                  
-                        }
-
-
-
-                       /* relizamos agrupamiento de bloques*/
-
-                       $minbloque=DB::Connection()->select("select centrocosto, ordenproduccion, bloque, min(calendario_id) horasmin  
-                          from IBERPLAS.cp_detalleplanificacion 
-                          where planificacion_id='$id'
-                        group by centrocosto,ordenproduccion, bloque");
-
-                       $maxbloque=DB::Connection()->select("select ordenproduccion, bloque, max(calendario_id) horasmax
-                        from IBERPLAS.cp_detalleplanificacion 
-                        where planificacion_id='$id'
-                        group by ordenproduccion,bloque");
-
-
-                       foreach ($minbloque as  $value) {
-                         
-                         $fechaini=CP_CALENDARIO_PLANIFICADOR_DETALLE::where('id','=',$value->horasmin)->first();
-                         
-                          
-                          $fechai=date("Y-m-d H:i:s",strtotime($fechaini->fechaCalendario));
-                         $task=new CP_events;
-                        $task->start_date=$fechai;
-                        $task->bloque=$value->bloque;
-                        //$task->end_date=$fechaf;
-                        //$task->text=$value->text;
-                        //$task->type_id=$value->cc;
-                        $task->centrocosto=$value->centrocosto;
-                        $task->ordenproduccion=$value->ordenproduccion;
-                        $task->save(); 
-                         
-                       };
-                         foreach ($maxbloque as $value) {
-                            $idhoramax=$value->horasmax;
-                     
-                            $fechamax=DB::Connection()->select("select DATEADD(MINUTE,59,fechaCalendario) as fechaCalendario
-                              from IBERPLAS.CP_CALENDARIO_PLANIFICADOR_DETALLE where id='$idhoramax'");
-                              foreach ($fechamax as $key => $fechamax) {
-                                $fechamax2=$fechamax->fechaCalendario;
-                              }
-                          
-                             $orden=DB::Connection()->select("select ('ORDEN='+PL.ordenproduccion+'-'+'ARTICULO='+ART.ARTICULO+'-'+ART.DESCRIPCION) as text,SUBSTRING(pl.centrocosto,7,3) as cc 
-                        from 
-                        IBERPLAS.CP_PLANIFICACION pl, 
-                        IBERPLAS.ARTICULO ART
-                        WHERE 
-                        PL.ARTICULO=ART.ARTICULO AND
-                        pl.id='$id'
-                        ");
-
-                             foreach ($orden as $orden) {
-                               
-                               $texto=$orden->text;
-                               $cc=$orden->cc;
-                             };
-
-                               $fecham=date("Y-m-d H:i:s",strtotime($fechamax2));  
-                              CP_events::where('ordenproduccion','=',$value->ordenproduccion)
-                              ->where('bloque','=',$value->bloque)->
-                              update(['end_date'=>$fecham,
-                                      'text'=>$orden->text,
-                                      'type_id'=>$orden->cc]);
-
-                            }
-
-
-
+                        pl.id='$id' and  VersionEstado='A'" );
                       
+                      
+                 
+                 
+                  
 
+                           /* relizamos agrupamiento de bloques*/
 
-                  /*
-
-                      foreach ($gannt2 as $value) {
-                       $fechai=date("Y-m-d H:i:s",strtotime($value->fechaCalendariomin));
-                        $fechaf=date("Y-m-d H:i:s",strtotime($value->fechaCalendariomax));
+                    
+                     $min=DB::Connection()->select("select min(calendario_id) mino, DATEPART(WEEK,fechaCalendario) semana 
+                       from IBERPLAS.CP_DETALLEPLANIFICACION 
+                       where planificacion_id='$id'
+                       group by  DATEPART(WEEK,fechaCalendario) ");
+                      
+                      foreach ($min as  $value) {
+                        
+                        $fechai=CP_DETALLEPLANIFICACION::where('calendario_id','=',$value->mino)->first();
+                        
                         $task=new CP_events;
-                        $task->start_date=$fechai;
-                        $task->end_date=$fechaf;
-                        $task->text=$value->text;
-                        $task->type_id=$value->cc;
-                        $task->centrocosto=$value->centrocosto;
-                        $task->ordenproduccion=$value->ordenproduccion;
+                        $task->start_date=date("Y-m-d H:i:s",strtotime($fechai->fechaCalendario));
+                        $task->planificador_id=$id;
+                        $task->bloque=$value->semana;
+                        
                         $task->save(); 
+                       
+
                       }
-                 */     
+                      $max=DB::Connection()->select("select max(calendario_id) max, DATEPART(WEEK,fechaCalendario) semana 
+                      from IBERPLAS.CP_DETALLEPLANIFICACION 
+                      where planificacion_id='$id'
+                      group by  DATEPART(WEEK,fechaCalendario) ");
+
+
+                      foreach ($max as  $value) {
+                        # code...
+                        $max2=CP_DETALLEPLANIFICACION::where('calendario_id','=',$value->max)->first();
+                        $fechaf=date("Y-m-d H:i:s",strtotime($max2->fechaCalendario));
+                        
+                       
+                        CP_events::where('bloque','=',$value->semana)->where('planificador_id','=',$id)->update(['end_date'=>$fechaf]);
+
+                      }
+
+                      foreach ($gannt2 as  $value) {
+                        
+                        CP_events::where('planificador_id','=',$id)
+                        ->update(['text'=>$value->text,'type_id'=>$value->cc,'centrocosto'=>$value->centrocosto,'ordenproduccion'=>$value->ordenproduccion]);
+
+                        
+                      }
+
+
+                 
+
+                 
+
+                    
+                    
 
 
 
@@ -1121,10 +1215,7 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
     WHERE EQ.EQUIPO=PL.centrocosto) ");
 
    
-
-
-    
-    $OrdenProduccion=CP_PLANIFICACION::all();
+    $OrdenProduccion=CP_PLANIFICACION::where('VersionEstado','=','A')->get();
         return view('ControPiso.Consulta.Ticket')
                ->with('OrdenProduccion',$OrdenProduccion)
                ->with('TipoEquipo',$TipoEquipo);
@@ -1132,7 +1223,6 @@ USUARIOCREACION='$usuario' group by turno,fecha,operacion,centrocosto,secuencia,
 
   public function consultaticket($id)
   {
-
     $cp_planificacion=CP_PLANIFICACION::where('id','=',$id)->get();
     $CP_ENCABEZADOPLANIFICACION=CP_ENCABEZADOPLANIFICACION::where('planificacion_id','=',$id)->get();
     $CP_DETALLEPLANIFICACION=CP_DETALLEPLANIFICACION::where('planificacion_id','=',$id)->get();

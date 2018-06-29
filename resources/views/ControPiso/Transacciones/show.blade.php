@@ -18,11 +18,12 @@
 				            <div class="form-group">
 			                    <label>Cantidad a Producir </label>
 			                    <input type="text" id="id_cantidad"  class="form-control"  readonly="readonly">
+			                    <input type="hidden" name="operacion" id="operacion">
 	                        </div>
 
 							<div class="form-group">
 			                    <label>Centro Costo </label>
-			                    <select id="id_centrocosto" class="form-control">
+			                    <select id="id_centrocosto" name="id_centrocosto" class="form-control">
 			                    	
 			                    </select>
 			                    
@@ -156,11 +157,11 @@
 
 	                        <div class="form-group">
 			                    <label>Total Horas </label>
-			                    <input type="text" id="idm_totalhoras" name="operacion" class="form-control" readonly="readonly" >
+			                    <input type="text" id="idm_totalhoras" name="idm_totalhoras" class="form-control" readonly="readonly" >
 	                        </div>
 	                        <div class="form-group">
 			                    <label>Total de Turnos Estimados </label>
-			                    <input type="text" id="idm_totalturnos" name="operacion" class="form-control" readonly="readonly" >
+			                    <input type="text" id="idm_totalturnos" name="idm_totalturnos" class="form-control" readonly="readonly" >
 	                        </div>
 	                        <div class="form-group">
 		                          <label > Fecha : </label>

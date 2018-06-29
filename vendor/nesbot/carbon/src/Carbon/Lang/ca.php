@@ -28,9 +28,4 @@ return array(
     'from_now' => 'dins de :time',
     'after' => ':time després',
     'before' => ':time abans',
-    'diff_now' => 'ara mateix',
-    'diff_yesterday' => 'ahir',
-    'diff_tomorrow' => 'demà',
-    'diff_before_yesterday' => "abans d'ahir",
-    'diff_after_tomorrow' => 'demà passat',
 );

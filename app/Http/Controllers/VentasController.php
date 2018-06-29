@@ -19,7 +19,9 @@ class VentasController extends Controller
        PE.PEDIDO=PL.PEDIDO and
        PL.ARTICULO=AR.ARTICULO and
        pe.CLIENTE_ORIGEN=cl.CLIENTE and
-       pe.ESTADO='A'  and PE.PEDIDO like 'PCEX%'
+       pe.ESTADO='A' and
+       pe.FECHA_PROMETIDA>='2017-01-08' and
+       pe.FECHA_PROMETIDA<='2018-30-03'
        ");
 
         return view('ControPiso.Consulta.Pedidos.index')

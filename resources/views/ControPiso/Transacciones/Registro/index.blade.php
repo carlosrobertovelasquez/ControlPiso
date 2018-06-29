@@ -12,8 +12,9 @@
 
 
   <div class="row">
+  
       <div class="col-xs-12">
-         
+      <a href=" {{url('/')}}" ><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>       
           <div class="box">
             <div class="box-header">
             
@@ -54,10 +55,10 @@
                                  <a href="{{route('registro.mo',[$OrdenProduccion->id,$OrdenProduccion->ordenproduccion])}}" class="btn btn-primary">M.O.</a>
                                 <a href="{{route('registro.ma',[$OrdenProduccion->id,$OrdenProduccion->ordenproduccion])}}" class="btn btn-primary">MAT.</a>
 
-                                @if(is_null($OrdenProduccion->CONFIRMADA))
-                                     <a href="{{route('registro.impresion',[$OrdenProduccion->id,$OrdenProduccion->ordenproduccion])}}" class="btn btn-primary">Confirmada</a> 
+                                @if($OrdenProduccion->aprobadaMO=='S' and $OrdenProduccion->aprobadaMA=='S')
+                                     <a href="{{route('registro.confirmarproduccion',[$OrdenProduccion->id,$OrdenProduccion->ordenproduccion])}}" class="btn btn-primary">Confirmada</a> 
                                     @else
-                                    <a href="{{route('registro.impresion',[$OrdenProduccion->id,$OrdenProduccion->ordenproduccion])}}" class="btn btn-primary">Aprobar</a>
+                                    <a href="#" class="btn btn-primary">Aprobar</a>
             
                                 @endif
 

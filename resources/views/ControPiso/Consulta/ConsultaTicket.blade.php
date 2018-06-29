@@ -14,7 +14,7 @@
   <div class="row">
       <div class="col-xs-12">
        
-
+      <a href=" {{url('Ticket')}}" ><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>
         <div class="box">
             <div class="box-header">
             

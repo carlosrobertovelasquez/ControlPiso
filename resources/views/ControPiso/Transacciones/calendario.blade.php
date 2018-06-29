@@ -91,10 +91,10 @@
           right: 'month,agendaWeek,agendaDay'
         },
         buttonText: {
-          today: 'Hoy',
-          month: 'Mes',
-          week: 'Semana',
-          day: 'Dia'
+          today: 'hoy',
+          month: 'mes',
+          week: 'semana',
+          day: 'dia'
         },
   
         events: { url:"cargaEventos"},

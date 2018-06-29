@@ -16,7 +16,15 @@
   <link rel='stylesheet' href='dhtmlxScheduler/dhtmlxscheduler_flat.css'>
   <link rel='stylesheet' href='css/styles.css'>
  
-  
+  <style type="text/css" >
+		html, body{
+			margin:0;
+			padding:0;
+			height:100%;
+			overflow:hidden;
+		}
+	</style>
+
 
 
 
@@ -25,13 +33,27 @@
 <body>
 
 
-<input type="radio" id="scale1" name="scale" value="1" onclick="dia();" checked /><label for="scale1">Escala Por Dia</label><br>
-<input type="radio" id="scale2" name="scale" value="2" onclick="semana();" /><label for="scale2">Escala Por Semana</label><br>
-<input type="radio" id="scale3" name="scale" value="3" onclick="mes();" /><label for="scale3">Escala Por Mes</label><br>
-<input type="radio" id="scale4" name="scale" value="4" onclick="ano();" /><label for="scale4">Escala Por Año</label><br>
 
 
-<div id="scheduler_here" class="dhx_cal_container" style="width:96%; height:96%;">
+
+
+<div class="btn-group" data-toggle="buttons">
+<label class="btn btn-default active form-check-label">
+<input class="form-check-input" type="radio" id="scale1" name="scale" value="1" onclick="dia();" checked /><label for="scale1">Escala Por Dia</label>
+  </label>
+  <label class="btn btn-default active form-check-label"> 
+<input class="form-check-input" type="radio" id="scale2" name="scale" value="2" onclick="semana();" /><label for="scale2">Escala Por Semana</label>
+  </label>
+  <label class="btn btn-default active form-check-label">
+<input class="form-check-input" type="radio" id="scale3" name="scale" value="3" onclick="mes();" /><label for="scale3">Escala Por Mes</label>
+  </label>
+  <label class="btn btn-default active form-check-label">
+<input class="form-check-input" type="radio" id="scale4" name="scale" value="4" onclick="ano();" /><label for="scale4">Escala Por Año</label>
+  </label>
+  <a href=" {{url('/')}}" class="add-modal"><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>            
+  </div>
+
+<div id="scheduler_here" class="dhx_cal_container" class="dhx_cal_container" style='width:100%; height:100%;'>
     <div class="dhx_cal_navline">
           <div class="dhx_cal_prev_button">&nbsp;</div>
           <div class="dhx_cal_next_button">&nbsp;</div>
@@ -39,7 +61,10 @@
           <div class="dhx_cal_date"></div>
          
          
-          <select id="room_filter" onchange='showRooms(this.value)'></select>  
+          <div style="font-size:16px;padding:4px 20px;">
+                  Centro Costo:
+                  <select id="room_filter" onchange='updateSections(this.value)'></select>
+              </div>
     </div>
   <div class="dhx_cal_header"></div>
   <div class="dhx_cal_data"></div>
@@ -335,7 +360,30 @@ function setScaleHeight(){
   }
   dayScale = 1; 
 }
+window.updateSections = function updateSections(value) {
+		var currentRoomsArr = [];
+		if (value == 'all') {
+		//	scheduler.updateCollection("currentRooms", roomsArr.slice());
+			return
+		}
+		for (var i = 0; i < roomsArr.length; i++) {
+			if (value == roomsArr[i].type) {
+				currentRoomsArr.push(roomsArr[i]);
+			}
+		}
+		scheduler.updateCollection("currentRooms", currentRoomsArr);
+	};
   
+scheduler.attachEvent("onXLE", function () {
+		updateSections("all");
+
+		var select = document.getElementById("room_filter");
+		var selectHTML = ["<option value='all'>All</option>"];
+	//	for (var i = 1; i < roomTypesArr.length + 1; i++) {
+		//	selectHTML.push("<option value='" + i + "'>" + getRoomType(i) + "</option>");
+		//}
+		select.innerHTML = selectHTML.join("");
+	});
 scheduler.init("scheduler_here",new Date(),"timeline");
 //scheduler.parse(big_events_list, "json");
 scheduler.load("scheduler/data" ,"json");
