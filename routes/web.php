@@ -35,14 +35,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('buscar_usuario', 'UsuariosController@buscar_usuario');
     Route::post('borrar_usuario', 'UsuariosController@borrar_usuario');
     Route::post('editar_acceso', 'UsuariosController@editar_acceso');
-  
-
     Route::post('crear_rol', 'UsuariosController@crear_rol');
     Route::post('crear_permiso', 'UsuariosController@crear_permiso');
     Route::post('asignar_permiso', 'UsuariosController@asignar_permiso');
     Route::get('quitar_permiso/{idrol}/{idper}', 'UsuariosController@quitar_permiso');
-    
-    
     Route::get('form_nuevo_usuario', 'UsuariosController@form_nuevo_usuario');
     Route::get('form_nuevo_rol', 'UsuariosController@form_nuevo_rol');
     Route::get('form_nuevo_permiso', 'UsuariosController@form_nuevo_permiso');
@@ -54,7 +50,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('borrar_rol/{idrol}', 'UsuariosController@borrar_rol');
 
 
-     
+//Equipos     
  Route::get('Equipo', 'EquipoController@index');
  Route::get('Equipo_agregar_articulo/{id}', ['uses'=>'EquipoController@agregar_articulo','as'=>'agregar_articulo']);
  Route::get('guardar_articulo', ['uses'=>'EquipoController@guardar_articulo','as'=>'guardar_articulo']);
@@ -64,6 +60,10 @@ Route::group(['middleware' => 'auth'], function () {
  Route::get('opera_equipo', ['uses'=>'EquipoController@opera_equipo','as'=>'opera_equipo']);
  Route::get('editarArticuloCentrocosto/{id}', ['uses'=>'EquipoController@editarArticuloCentrocosto','as'=>'editarArticuloCentrocosto']);
  Route::get('ListarArticuloOperacion', ['uses'=>'EquipoController@ListarArticuloOperacion','as'=>'ListarArticuloOperacion']);
+  Route::get('TurnoEquipo', ['uses'=>'EquipoController@TurnoEquipo','as'=>'TurnoEquipo']);
+   Route::get('kilosArticulo', ['uses'=>'EquipoController@kilosArticulo','as'=>'kilosArticulo']);
+
+//Produccion
 
   Route::get('Produccion',['uses'=>'OrdenProduccionController@index','as'=>'Produccion.index'] );
 Route::get('ConsultaProduccion',['uses'=>'OrdenProduccionController@ConsultaProduccion', 'as'=>'ConsultaProduccion']);  
@@ -84,6 +84,8 @@ Route::get('viajero/{id}',['uses'=>'OrdenProduccionController@viajero', 'as'=>'v
  Route::get('clave',['uses'=>'ClaveController@index', 'as'=>'clave.index']);
  Route::get('ConsultarClave',['uses'=>'ClaveController@ConsultarClave', 'as'=>'ConsultarClave']);
  Route::get('AgregarClave',['uses'=>'ClaveController@AgregarClave', 'as'=>'AgregarClave']);
+ Route::get('subclaves/{id}',['uses'=>'ClaveController@subclaves', 'as'=>'subclaves']);
+
 
 //Transacciones/planificador
  Route::get('planificador',['uses'=>'PlanificarController@index', 'as'=>'planificador.index']);
@@ -97,17 +99,23 @@ Route::get('viajero/{id}',['uses'=>'OrdenProduccionController@viajero', 'as'=>'v
 
 //Transacciones/Registro MO-MA
 Route::get('registro',['uses'=>'RegistroController@index', 'as'=>'registro.index']);
-Route::get('registro/mo/{id}/{id2}',['uses'=>'RegistroController@mo', 'as'=>'registro.mo']);
+Route::get('registroMO',['uses'=>'RegistroController@registroMO', 'as'=>'registro.registroMO']);
+Route::get('registroMA',['uses'=>'RegistroController@registroMA', 'as'=>'registro.registroMA']);
+Route::get('registroPR',['uses'=>'RegistroController@registroPR', 'as'=>'registro.registroPR']);
+Route::get('registro/mo/{id}/{id2}/{id3}',['uses'=>'RegistroController@mo', 'as'=>'registro.mo']);
 Route::get('registro/ma/{id}/{id2}',['uses'=>'RegistroController@ma', 'as'=>'registro.ma']);
+Route::get('registro/pr/{id}/{id2}/{id3}',['uses'=>'RegistroController@pr', 'as'=>'registro.pr']);
 Route::get('registro/impresion/{id}/{id2}',['uses'=>'RegistroController@impresion', 'as'=>'registro.impresion']);
 Route::get('registro/listarhoras',['uses'=>'RegistroController@listarhoras', 'as'=>'registro.listarhoras']);
 Route::get('registro/listaremple',['uses'=>'RegistroController@listaremple', 'as'=>'registro.listaremple']);
 Route::get('registro/listaroperaciones',['uses'=>'RegistroController@listaroperaciones', 'as'=>'registro.listaroperaciones']);
 Route::get('registro/listarproduccion',['uses'=>'RegistroController@listarproduccion', 'as'=>'registro.listarproduccion']);
+Route::get('registro/listarproduccion2',['uses'=>'RegistroController@listarproduccion2', 'as'=>'registro.listarproduccion2']);
 Route::get('registro/totalhoras',['uses'=>'RegistroController@totalhoras', 'as'=>'registro.totalhoras']);
 Route::get('registro/tiempoPerdido',['uses'=>'RegistroController@tiempoPerdido', 'as'=>'registro.tiempoPerdido']);
 Route::get('registro/horasTrabajadas',['uses'=>'RegistroController@horasTrabajadas', 'as'=>'registro.horasTrabajadas']);
 Route::get('registro/metaxTurno',['uses'=>'RegistroController@metaxTurno', 'as'=>'registro.metaxTurno']);
+Route::get('registro/metaxTurno2',['uses'=>'RegistroController@metaxTurno2', 'as'=>'registro.metaxTurno2']);
 Route::get('registro/horasplanificadas',['uses'=>'RegistroController@horasplanificadas', 'as'=>'registro.horasplanificadas']);
 Route::get('registro/aprobar/{id2}',['uses'=>'RegistroController@aprobar', 'as'=>'registro.aprobar']);
 
@@ -118,16 +126,20 @@ Route::get('registro/agregarproduccion/',['uses'=>'RegistroController@agregarpro
 Route::get('registro/eliminar/{id}',['uses'=>'RegistroController@eliminar', 'as'=>'registro.eliminar']);
 Route::get('registro/eliminaremple/{id}',['uses'=>'RegistroController@eliminaremple', 'as'=>'registro.eliminaremple']);
 Route::get('registro/eliminarconsumo/{id}/{id2}/',['uses'=>'RegistroController@eliminarconsumo', 'as'=>'registro.eliminarconsumo']);
+Route::get('registro/eliminarproduccion2/{id}',['uses'=>'RegistroController@eliminarproduccion2', 'as'=>'registro.eliminarproduccion2']);
 Route::get('registro/buscarempleado/', ['uses'=>'RegistroController@buscarempleado','as'=>'registro.buscarempleado']);
 Route::get('registro/buscararticulo/', ['uses'=>'RegistroController@buscararticulo','as'=>'registro.buscararticulo']);
 Route::get('registro/agregarconsumo/',['uses'=>'RegistroController@agregarconsumo', 'as'=>'registro.agregarconsumo']);
 Route::get('registro/crearconsumo/{id}/{id2}/',['uses'=>'RegistroController@crearconsumo', 'as'=>'registro.crearconsumo']);
+Route::get('registro/crearproduccion/{id}/{id2}/{id3}/',['uses'=>'RegistroController@crearproduccion', 'as'=>'registro.crearproduccion']);
 Route::get('registro/aprobarconsumo/{id}/{id2}/',['uses'=>'RegistroController@aprobarconsumo', 'as'=>'registro.aprobarconsumo']);
 Route::get('registro/aprobarproduccion/',['uses'=>'RegistroController@aprobarproduccion', 'as'=>'registro.aprobarproduccion']);
 Route::get('registro/confirmarproduccion/{id}/{id2}/',['uses'=>'RegistroController@confirmarproduccion', 'as'=>'registro.confirmarproduccion']);
 Route::get('registro/conformeconsumo/{id}',['uses'=>'RegistroController@conformeconsumo', 'as'=>'registro.conformeconsumo']);
+Route::get('registro/confirmarproduccion2/{id}/{id2}/',['uses'=>'RegistroController@confirmarproduccion2', 'as'=>'registro.confirmarproduccion2']);
 Route::get('registro/confirmarconsumo/{id}/{id2}/',['uses'=>'RegistroController@confirmarconsumo', 'as'=>'registro.confirmarconsumo']);
 Route::get('registro/listarconsumo',['uses'=>'RegistroController@listarconsumo', 'as'=>'registro.listarconsumo']);
+Route::get('registro/procesarsoftland/{id}',['uses'=>'RegistroController@procesarsoftland', 'as'=>'registro.procesarsoftland']);
 
 //turno
   Route::get('Turno', ['uses'=>'TurnosController@index','as'=>'Turno.index']);

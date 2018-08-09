@@ -8,5 +8,5 @@ class CP_TEMP_PLANIFICACION_ENCA extends Model
 {
       protected $table='IBERPLAS.CP_TEMP_PLANIFICACION_ENCA';
      public $timestamps = false;
-     protected $dateFormat='d-m-Y H:i:s';
+     protected $dateFormat='Y-m-d H:i:s';
 }

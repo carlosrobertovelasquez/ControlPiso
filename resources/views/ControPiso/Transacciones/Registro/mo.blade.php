@@ -13,7 +13,7 @@
          
         
 <section class="content">
-<a href=" {{url('registro')}}" ><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>
+<a href=" {{url('registroMO')}}" ><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>
   <form  id="form_registrohoras" role="search" action="#" method="GET" >
 
           <input type="hidden" name="_token" value="{{csrf_token()}}">
@@ -62,7 +62,6 @@
                              
                         
 
-
                          </div>
 
                          <div class="form-group">
@@ -102,33 +101,36 @@
 
  
        <div class="box-body">
-
-       
               <div class="row">               
-                <div class="col-xs-2">
-                  <input  type="time" class="form-control" id="hora1"  name="hora1" style="width: 135px;height: 25px"   value="<?php echo date("H:i");?>">
-                </div>
-                <div class="col-xs-2">
-                   <input  type="time" class="form-control" id="hora2" onblur="restarHoras();"  name="hora2" style="width: 135px;height: 25px"   value="<?php echo date("H:i");?>">
-                </div>
-                <div class="col-xs-2">
-                  <input type="text" readonly="readonly" name="horatotal" class="form-control" placeholder="Tiempo Minutos"  id="horatotal">
-                </div>
-                <div class="col-xs-2">
-                    <select   id="id_clave" name="id_clave" class="form-control select2" style="width: 100%;">
+                  <div class="col-xs-2">
+                     <input  type="time" class="form-control select2" id="hora1"  name="hora1"    value="<?php echo date("H:i");?>">
+                  </div>
+                  <div class="col-xs-2">
+                     <input  type="time" class="form-control select2" id="hora2" onblur="restarHoras();"  name="hora2"    value="<?php echo date("H:i");?>">
+                  </div>
+                  <div class="col-xs-1">
+                    <input type="text" readonly="readonly" name="horatotal" class="form-control" placeholder="Tiempo Minutos"  id="horatotal">
+                  </div>
+                  <div class="col-xs-2">
+                      <select   id="id_clave" name="id_clave" class="form-control select2" ">
                                        <option value="0">SELECIONES UNA OPERACION:</option>
                                  
                                        @foreach($clave_mo as $clave_mo)
                                        <option value="{{ $clave_mo->CLAVE }}">{{ $clave_mo->CLAVE }}-{{$clave_mo->DESCRIPCION}} </option>
                                        @endforeach
+                      </select>
+                  </div>
+                  <div class="col-xs-2" >
+                    <select name="id_subclave" class="subclave" style="width: 100% ; font-size: 14px;  padding: 6px 12px;" id="id_subclave">
+                        <option selected="selected">SELECIONAR SUBCLAVE</option>
                     </select>
-                </div>   
-                <div class="col-xs-2">
-                  <input type="text" name="comentarios"  id="comentarios" class="form-control" placeholder="Comentarios">
-                </div>
-                <div class="col-xs-2">
-                  <button type="button"   id="btnadicionar" class="form-control" onclick="crear()" >Adicionar</button> 
-                </div>
+                  </div>   
+                  <div class="col-xs-2">
+                    <input type="text" name="comentarios"  id="comentarios" class="form-control select2" placeholder="Comentarios">
+                  </div>
+                  <div >
+                    <button type="button"   id="btnadicionar" class="show-modal btn btn-success"  onclick="crear()">Guardar</button> 
+                  </div>
                  
               </div>
             </div>
@@ -157,7 +159,7 @@
                 </div>
                 <div class="col-xs-2">
                 <label></label>
-                  <button type="button"   id="btnadicionarh" class="form-control" onclick="crear2()" >Adicionar Horas </button> 
+                  <button type="button"   id="btnadicionarh" class="show-modal btn btn-success" onclick="crear2()" style="width: 100% ; font-size: 16px;  padding: 6px 16px;" >Adicionar Horas </button> 
                 </div>
 
               </div>
@@ -313,6 +315,7 @@
   metaxTurno();
   listaempleados();
   listarproduccion();
+  var novalidar;
  
  
 
@@ -336,6 +339,20 @@
   
  });
 
+$('#id_clave').change(function(){
+   var claveId = $(this).val();
+      $ciudaditems = $('.cityItems').remove();
+      
+        $.get('/subclaves/'+claveId, function(data){
+            $.each(data, function(index, element){
+              //console.log(element);
+              $('select#id_subclave').append('<option value="'+element.SUBCLAVE+'"class="cityItems">'+element.DESCRIPCION+'</option>')
+            });
+        }, 'json');
+    });
+
+
+
 $('#produccion').on('change',function () 
 {
   var meta= document.getElementById("meta").value;
@@ -346,6 +363,8 @@ $('#produccion').on('change',function ()
    $("#eficiencia").val(v04);
    $("#total").val(produccion);
   
+  
+
    if(produccion>0){
      
     document.getElementById("aprobar").style.display='inline';
@@ -451,20 +470,56 @@ function metaxTurno()
 var id= document.getElementById("norden").value;
 var id2= document.getElementById("id_turno").value;
 var id3= document.getElementById("id_operacion").value; 
+var id4= document.getElementById("maquina").value;
+var id5= document.getElementById("id_articulo").value;
 var urlraiz=$("#url_raiz_proyecto").val();
 var miurl =urlraiz+"/registro/metaxTurno";
 
 $.ajax({
   type:'get',
   url:miurl,
-  data:{id:id,id2:id2,id3:id3},
+  data:{id:id,id2:id2,id3:id3,id4:id4,id5:id5},
   success:function(resul){
     
-    $('#meta').val(resul);
+    if(resul==0){
+       meta2();
+       novalidar="N";
+    }else{
+       novalidar="S";
+    $('#meta').val(resul.cantidad);  
+    }
+    
   }
  });
 }
 
+function meta2(){
+  var id= document.getElementById("norden").value;
+var id2= document.getElementById("id_turno").value;
+var id3= document.getElementById("id_operacion").value; 
+var id4= document.getElementById("maquina").value;
+var id5= document.getElementById("id_articulo").value;
+var ht=document.getElementById("horasTrabajadas").value;
+var urlraiz=$("#url_raiz_proyecto").val();
+var miurl =urlraiz+"/registro/metaxTurno2";
+
+$.ajax({
+  type:'get',
+  url:miurl,
+  data:{id:id,id2:id2,id3:id3,id4:id4,id5:id5},
+  success:function(resul){
+     if(ht=="0"){
+      $('#meta').val(parseFloat(resul));
+     }else{
+      var horas=parseFloat(resul)*parseFloat(ht);
+
+      $('#meta').val(horas);
+     }
+     
+  }
+ });
+
+}
 function horasplanificadas()
 {
 var id= document.getElementById("norden").value;
@@ -569,18 +624,18 @@ function actualizar(){
   horasPerdidas();
   horasTrabajadas();
   horasplanificadas();
-   metaxTurno();
+  metaxTurno();
   listaempleados();
   listarproduccion();
   document.getElementById("btnadicionar").disabled=false;
-    document.getElementById("comentarios").disabled=false;
-    document.getElementById("id_clave").disabled=false;
-    document.getElementById("horatotal").disabled=false;
+  document.getElementById("comentarios").disabled=false;
+  document.getElementById("id_clave").disabled=false;
+  document.getElementById("horatotal").disabled=false;
 }
  
   
 
-  function restarHoras(){
+function restarHoras(){
     
    var inicio=document.getElementById("hora1").value;
    var fin=document.getElementById("hora2").value;
@@ -590,73 +645,54 @@ function actualizar(){
 
   
    inicioHoras=parseInt(inicio.substr(0,2));
+  
+ 
 
 
-    if(inicio>fin){
-
-      inicioHoras=24-inicioHoras;
-           inicioMinutos=parseInt(inicio.substr(3,2));
-  finMinutos=parseInt(fin.substr(3,2));
-   finHoras=parseInt(fin.substr(0,2));
-
-   transcurridoMinutos=finMinutos-inicioMinutos;
-   transcurridoHoras=finHoras+inicioHoras;
-
-    }else{
-
-       inicioHoras=parseInt(inicio.substr(0,2));
-            inicioMinutos=parseInt(inicio.substr(3,2));
-  finMinutos=parseInt(fin.substr(3,2));
-   finHoras=parseInt(fin.substr(0,2));
-
-   transcurridoMinutos=finMinutos-inicioMinutos;
-   transcurridoHoras=finHoras-inicioHoras;  
-
-    }
-
-
-
-
-
-   if(transcurridoMinutos<0){
+  if(inicio>fin){
+    inicioHoras=24-inicioHoras;
+    inicioMinutos=parseInt(inicio.substr(3,2));
+    finMinutos=parseInt(fin.substr(3,2));
+    finHoras=parseInt(fin.substr(0,2));
+    transcurridoMinutos=finMinutos-inicioMinutos;
+    transcurridoHoras=finHoras+inicioHoras;
+  }else{
+    inicioHoras=parseInt(inicio.substr(0,2));
+    inicioMinutos=parseInt(inicio.substr(3,2));
+    finMinutos=parseInt(fin.substr(3,2));
+    finHoras=parseInt(fin.substr(0,2));
+    transcurridoMinutos=finMinutos-inicioMinutos;
+    transcurridoHoras=finHoras-inicioHoras;  
+  }
+  if(transcurridoMinutos<0){
     transcurridoHoras--;
     transcurridoMinutos= 60 + transcurridoMinutos;
-   }
-   horas=transcurridoHoras.toString();
-   minutos=transcurridoMinutos.toString();
-   total01=horast+transcurridoHoras
-
-   if(total01>id){
-    document.getElementById("btnadicionar").disabled=true;
-    document.getElementById("comentarios").disabled=true;
-    document.getElementById("id_clave").disabled=true;
-    
-    window.alert('A superado la Cantidad de Horas Planificadas Solicitar Aumento de Horas....');
-
-   }else{
-
-     document.getElementById("btnadicionar").disabled=false;
+  }
+  horas=transcurridoHoras.toString();
+  minutos=transcurridoMinutos.toString();
+  total01=horast+transcurridoHoras
+  
+  if(total01>id){
+      if (novalidar=="S"){
+        document.getElementById("btnadicionar").disabled=true;
+        document.getElementById("comentarios").disabled=true;
+        document.getElementById("id_clave").disabled=true;  
+        window.alert('A superado la Cantidad de Horas Planificadas Solicitar Aumento de Horas....');
+      }
+  }else{
+    document.getElementById("btnadicionar").disabled=false;
     document.getElementById("comentarios").disabled=false;
     document.getElementById("id_clave").disabled=false;
-   
-   if(horas.length<2){
-    horas="0"+horas;
-   }
-
-   if(minutos.length<2){
-    minutos="0"+minutos;
-   }
+    if(horas.length<2){
+      horas="0"+horas;
     }
+    if(minutos.length<2){
+      minutos="0"+minutos;
+    }
+  }  
+  document.getElementById("horatotal").value=horas+":"+minutos;
 
-
-   document.getElementById("horatotal").value=horas+":"+minutos;
-    
-  
-
-   
-   
-
-  }
+}
 
 
 function crear(){
@@ -737,7 +773,6 @@ var dataString=$('#form_registrohoras').serialize();
    alert('Se actualizo Correctamente');
 
    actualizar();
-
 
 
   }

@@ -17,10 +17,9 @@
 	                        </div>
 				            <div class="form-group">
 			                    <label>Cantidad a Producir </label>
-			                    <input type="text" id="id_cantidad"  class="form-control"  readonly="readonly">
+			                    <input type="text" id="id_cantidad" name="id_cantidad"  class="form-control"  readonly="readonly">
 			                    <input type="hidden" name="operacion" id="operacion">
 	                        </div>
-
 							<div class="form-group">
 			                    <label>Centro Costo </label>
 			                    <select id="id_centrocosto" name="id_centrocosto" class="form-control">
@@ -137,7 +136,6 @@
 						 
 
 
-
 	                    </div>
 
 	                    <div class="col-md-6">
@@ -165,7 +163,7 @@
 	                        </div>
 	                        <div class="form-group">
 		                          <label > Fecha : </label>
-		                          <input  type="date" class="form-control" id="id_fecha"  name="id_fecha" style="width: 250px;height: 40px"   value="<?php echo date("Y-m-d");?>">      
+		                          <input  type="date" class="form-control" id="id_fecha"  name="id_fecha" style="width: 250px;height: 40px">      
                             </div>
                             <div class="form-group">
 		                          <label > Hora : </label>

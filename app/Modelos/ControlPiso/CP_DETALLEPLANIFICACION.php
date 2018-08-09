@@ -24,5 +24,5 @@ class CP_DETALLEPLANIFICACION extends Model
                 'planificacion_id'
       ];
      public $timestamps = false;
-     protected $dateFormat='d-m-Y H:i:s';
+     protected $dateFormat='Y-m-d H:i:s';
 }

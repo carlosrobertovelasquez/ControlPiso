@@ -42,7 +42,24 @@
               </div>   
               <div>
                 <h2 class="box-title">Fecha Fin: {{Carbon\Carbon::parse($cp_planificacion->fechamax)->format('d-m-Y H:i:s')}}</h2> 
-              </div>  
+              </div>
+
+
+             @if(is_null($cp_planificacion->CONFIRMADA)|| empty($cp_planificacion->CONFIRMADA))
+               <div>
+                <a href="#" class="btn btn-primary">Falta Confirmacion</a>
+              </div>
+                 
+                 @else
+                  <div class="box-title">
+
+                   <a href="{{route('registro.procesarsoftland',$cp_planificacion->id)}}"  onclick="return confirm('Esta seguro de Cargar registros a Softland  ')" class="btn btn-primary" >Procesar Softland</a>
+
+                    
+            </div>
+              @endif
+
+                
             @endforeach
 
             <br>
@@ -93,7 +110,11 @@
                           <th>Totales</th>
                           <th>{{number_format($meta,2)}}</th>
                           <th>{{number_format($produccion,2)}}</th>
+                          @if($meta==0)
+                          <th>0.00 </th>
+                          @else
                           <th>{{number_format((($produccion/$meta)*100),2)}} </th>
+                          @endif
                           <th>{{number_format($desno,2)}}</th>
                           <th>{{number_format($desrec,2)}}</th>
                           <th>{{number_format($total,2)}}</th>     
@@ -261,6 +282,9 @@
                   </table>
                 </div>
             </div>
+          
+            
+
          </div>
       </div>
   </div>       

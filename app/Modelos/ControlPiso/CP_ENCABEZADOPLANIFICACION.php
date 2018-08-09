@@ -11,5 +11,5 @@ class CP_ENCABEZADOPLANIFICACION extends Model
      protected $table='IBERPLAS.CP_ENCABEZADOPLANIFICACION';
      protected $fillable=['ORDENPRODUCCION','ARTICULO','CANTIDADAPRODUCIR','PEDIDO','MAQUINA','PIEZASXHORA','PIEZAXTURNO','CANTIDADXTURNO','FECHAPLANIFICADA','TURNOSPLANIFICADOS','USUARIOCREACION','FECHACREACION','USUARIOUPDATE','FECHAUPDATE','ESTADO'];
      public $timestamps = false;
-     protected $dateFormat='d-m-Y H:i:s';
+     protected $dateFormat='Y-m-d H:i:s';
 }

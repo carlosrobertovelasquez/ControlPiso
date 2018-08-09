@@ -50,7 +50,14 @@
                     <li><a href="{{url('Produccion')}}">Ordenes de Produccion</a></li>
                     <li><a href="{{url('planificador')}}">Planificador</a></li>
                     <li><a href="{{url('Calendario')}}">Calendario</a></li>
-                    <li><a href="{{url('registro')}}">Registro MO-MA</a></li>
+                    <li><a href="">Registro </a>
+                     <ul class="treeview-menu">
+                        <li><a href="{{url('registroMO')}}">Registro Mano Obra</a></li>
+                        <li><a href="{{url('registroMA')}}">Registro Materiales</a></li>
+                        <li><a href="{{url('registroPR')}}">Registro Produccion</a></li>    
+                     </ul>
+                    </li>
+                    
                     <li><a href="#">Ficha Tecnica</a></li>
                     
                 </ul>
@@ -61,7 +68,7 @@
                 <ul class="treeview-menu">
                     <li><a href="{{url('ventas')}}">Pedidos</a></li>
                      <li><a href="{{url('Ticket')}}">Ticket</a></li>
-                    
+                   <li><a href="{{url('gantt')}}">Gantt</a></li> 
                      <li><a href="{{url('scheduler')}}">Calendario</a></li>
                     <li><a href="#">Pedidos</a></li>
                     <li><a href="{{url('ConsultaProduccion')}}">Ordenes de Produccion</a></li>

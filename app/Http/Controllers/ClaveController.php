@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Modelos\ControlPiso\CP_CLAVE_MO;
+use App\Modelos\ControlPiso\CP_SUBCLAVES;
 Use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -70,6 +71,15 @@ class ClaveController extends Controller
     }
 
 
+  public function subclaves($id){
+     
+
+  $subclaves = CP_SUBCLAVES::where('CLAVE_ID','=',$id)->get();
+
+  
+    return Response()->json($subclaves);
+      
+  }
 
 
 

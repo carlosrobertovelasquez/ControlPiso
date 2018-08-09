@@ -35,11 +35,9 @@
                           <th>Articulo</th>
                           <th>Cantidad</th>
                           <th>Horas</th>
-                          <th>Version</th>
-                          <th>Pedido</th>
-                          <th>Maquina</th>
-                          <th>Estado</th>
-                          <th>Fecha</th>
+                          <th>Maquina</th>  
+                          <th>Fecha Inicio</th>
+                          <th>Fecha Fin</th>
                           <th>Selecionar</th>
                         </tr>
                     </thead>
@@ -58,12 +56,9 @@
                                 <td>{{ $OrdenProduccion->articulo }}</td> 
                                 <td>{{ number_format($OrdenProduccion->cantidad ,2)}}</td>
                                 <td>{{$OrdenProduccion->horas}}</td>
-                                <td>{{ number_format($OrdenProduccion->version ,2)}}</td>
-                                <td>{{$OrdenProduccion->pedido}}</td>
                                 <td>{{$OrdenProduccion->centrocosto}}</td>
-                                <td>{{$OrdenProduccion->estado}}</td>
-                                <td>{{ Carbon\Carbon::parse($OrdenProduccion->fechamin)->format('d-m-Y') }}</td>
-                               
+                                <td>{{ Carbon\Carbon::parse($OrdenProduccion->fechamin)->format('d-m-Y H:i:s') }}</td>
+                                 <td>{{ Carbon\Carbon::parse($OrdenProduccion->fechamax)->format('d-m-Y H:i:s') }}</td>
                                
                                 <td>
                                  <a href="{{route('ConsultarTicket',[$OrdenProduccion->id])}}" class="btn btn-primary" title="Consultar"><span class="glyphicon glyphicon-info-sign" ></span></a></a>
@@ -74,8 +69,8 @@
                                        data-id4="{{$OrdenProduccion->articulo}}"
                                        data-id5="{{$OrdenProduccion->centrocosto}}"
                                        data-id6="{{$OrdenProduccion->horas}}"
-                                       data-id7="{{ Carbon\Carbon::parse($OrdenProduccion->fechamin)->format('d-m-Y') }}"
-                                       data-id8="{{ Carbon\Carbon::parse($OrdenProduccion->fechamin)->format('H:m') }}"
+                                       data-id7="{{ Carbon\Carbon::parse($OrdenProduccion->fechamin)->format('d-m-Y H:m') }}"
+                                       data-id8="{{ Carbon\Carbon::parse($OrdenProduccion->fechamax)->format('d-m-Y H:m') }}"
                                         title="Reasigar Horas " >
                                 <span class="glyphicon glyphicon-dashboard"></span></button>
                                  <a href="{{route('registro.impresion',[$OrdenProduccion->id,$OrdenProduccion->ordenproduccion])}}" class="btn btn-primary"  title="Imprimir"><span class="glyphicon glyphicon-print" ></span></a>
@@ -90,18 +85,16 @@
                     </tbody>
                     <tfoot>
                       <tr>
-                        <th>ID</th>
-                        <th>Operacion</th>
-                        <th>Ord.Produ</th>
-                        <th>Articulo</th>
-                        <th>Cantidad</th>
-                        <th>Horas</th>
-                        <th>Version</th>
-                        <th>Pedido</th>
-                        <th>Maquina</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                        <th>Selecionar</th>
+                         <th>ID</th>
+                          <th>Operacion</th>
+                          <th>Ord.Prod</th>
+                          <th>Articulo</th>
+                          <th>Cantidad</th>
+                          <th>Horas</th>
+                          <th>Maquina</th>  
+                          <th>Fecha Inicio</th>
+                          <th>Fecha Fin</th>
+                          <th>Selecionar</th>
                       </tr>
                     </tfoot>
                   </table>
@@ -143,6 +136,13 @@
             </div>
            
             <div class="form-group">
+                  <fieldset data-role="controlgroup" data-type="horizontal" >
+                                 <legend>Selecion de Cambio </legend>  
+                      <p>               
+                       <INPUT type="radio" id="fechainicio" name="fechainicio" onclick="ckekfechainicio()" value="FI">Fecha Hora Inicio<BR>
+                       <INPUT type="radio" id="fechafin"  name="fechafin"  onclick="ckekfechafin()"  value="FF" checked>Fecha Hora Fin<BR>
+                    </p>
+                </fieldset>
                 <fieldset data-role="controlgroup" data-type="horizontal" >
                                   <legend>Horarios </legend>
                                   <label for="normal">Turno A</label>
@@ -198,12 +198,12 @@
         </div>
         <div class="col-md-6">
            <div class="form-group">
-              <label >Fecha Inicio</label>
-              <input  type="text" class="form-control" id="fechainicio2" name="fechainicio2"  value="<?php echo date("Y-m-d H:m");?>"  >
+              <label >Fecha  Hora Inicio</label>
+              <input  type="text" class="form-control" id="fechainicio2" readonly="readonly" name="fechainicio2"  value="<?php echo date("Y-m-d H:m:i");?>"  >
             </div>
             <div class="form-group">
-              <label >Hora Inicio</label>
-              <input  type="time" class="form-control" id="horainicio" name="horainicio"  value="<?php echo date("H:i");?>"  >
+              <label >Fecha Hora Fin</label>
+              <input  type="text" class="form-control" id="fechafin2" name="fechafin2" readonly="readonly" value="<?php echo date("Y-m-d H:m:i");?>"  >
             </div>
 
             <div class="form-group">
@@ -363,6 +363,25 @@ function ValidarTurnob(){
    }
    
    }  
+  
+  function ckekfechainicio(){
+    var fi = document.getElementById('fechainicio').checked;
+    if(fi==true){
+      document.getElementById('fechainicio').checked=true;
+      document.getElementById("fechafin").checked = false;
+
+    }
+
+
+  }
+  function ckekfechafin(){
+   var ff = document.getElementById('fechafin').checked;
+    if(ff==true){
+      document.getElementById("fechainicio").checked = false;
+
+    }
+    
+  }
 
 $(document).on('click','.show-modal',function(e){   
 
@@ -384,7 +403,7 @@ var id=$(this).data('id');
    $('#articulo').val(articulo);
    $('#centrocosto').val(centrocosto);
    $('#fechainicio2').val(fecha);
-   $('#horainicio').val(horaini);
+   $('#fechafin2').val(horaini);
    //document.getElementById("fechainicio2").value =fecha
    //document.getElementById("fechainicio2").innerHTML = fecha;
    $('#horas').val(horas);
@@ -427,34 +446,16 @@ function jsFunction(){
 
 function actualizarhoras(){
   var dataString=$('#form_planificacion').serialize();
- 
-//  var id =$('#id').val();
-  //   var id2 =$('#ordenproduccion').val();
-    // var id3 =$('#horasadicionales').val();
-     //var id4=$('#fechainicio2').val();
-
-   
-     
-
-       var urlraiz=$("#url_raiz_proyecto").val();
-        var miurl =urlraiz+"/planificador/cambiohora/";
-     
-       
-     $.ajax({
-        url:miurl,
+  var urlraiz=$("#url_raiz_proyecto").val();
+  var miurl =urlraiz+"/planificador/cambiohora/";     
+  $.ajax({
+    url:miurl,
         //data:{"id":id,"id2":id2,"id3":id3,"id4":id4,dataString}
-       data:dataString+'&_token={{csrf_token()}}',
-     }).done(function(data){
-      
-       //listaempleados();
-       //document.getElementById("searchempleado").value="";
-       //document.getElementById("nombre").value="";
+    data:dataString+'&_token={{csrf_token()}}',
+  }).done(function(data){    
      });
-
      $('#myModal').modal('hide');
-
-    location.reload(true);
-
+    //location.reload(true);
 }
 
 
