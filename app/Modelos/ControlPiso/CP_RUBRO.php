@@ -8,6 +8,8 @@ class CP_RUBRO extends Model
 {
      protected $table='IBERPLAS.CP_RUBRO';
      public $timestamps = false;
-     protected $dateFormat='Y-m-d H:i:s';
+     protected $fillable=['fechamax'];
+     protected $dates=['fechamax'];
+     protected $dateFormat='d-m-Y H:i:s';
       
 }

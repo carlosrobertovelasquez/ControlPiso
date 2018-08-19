@@ -10,7 +10,8 @@ use App\Modelos\Softland\EQUIPO;
 
 class GanttController extends Controller
 {
-
+private $FechaTimeBD="d-m-Y H:i:s";
+private $FechaBD="d-m-Y";
 public function index(Request $request){
 $anio='TODOS';
 $TipoEquipo=DB::Connection()->select("SELECT TIPO_EQUIPO,DESCRIPCION FROM IBERPLAS.TIPO_EQUIPO 
@@ -41,7 +42,7 @@ $gannt=DB::Connection()->select("select (ART.DESCRIPCION) as text,
             PLA.centrocosto,
             PLA.id");
 foreach ($gannt as $value) {
-  $fecha=date("Y-m-d H:i:s",strtotime($value->fechamin));
+  $fecha=date($this->FechaTimeBD,strtotime($value->fechamin));
   $task=new cp_tasks;
   $task->text=$value->text;
   $task->duration=$value->horas;
@@ -82,7 +83,7 @@ $agruparporcc=DB::Connection()->select("
   centrocosto as text 
   from IBERPLAS.CP_tasks group by centrocosto");     
 foreach ($agruparporcc as $value) {
-  $fecha=date("Y-m-d H:i:s",strtotime($value->fechamin));
+  $fecha=date($this->FechaTimeBD,strtotime($value->fechamin));
   $task=new cp_tasks;
   $task->text=$value->text;
   $task->duration=$value->horas;

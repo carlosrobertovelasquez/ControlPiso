@@ -9,5 +9,5 @@ class CP_PLANIFICACION extends Model
       protected $table='IBERPLAS.CP_PLANIFICACION';
        
        public $timestamps = false;
-       protected $dateFormat='Y-m-d H:i:s';
+       
 }

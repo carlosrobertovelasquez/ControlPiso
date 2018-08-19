@@ -18,6 +18,8 @@ use Illuminate\Http\Response;
 
 class EquipoController extends Controller
 {
+private $FormatoFechaTimeBD="d-m-Y H:i:s";
+private $FormatoFechaBD="d-m-Y";
 public function index(){
   $ESTRUC_MANUFACTURA=ESTRUC_MANUFACTURA::where('ESTADO','=','A')->get();
   return view('ControPiso.Maestros.Equipos.listado_equipo', ['ESTRUC_MANUFACTURA' => $ESTRUC_MANUFACTURA]);
@@ -193,13 +195,11 @@ return redirect('Equipo');
 
 
   }
-  public function ListarArticuloOperacion(Request $request){
-    $id1=$_GET['art'];
-    $id2=$_GET['ope'];
-   
-    DB::table('IBERPLAS.CP_RUBRO')->delete();
-
-     $rubro=DB::Connection()->select("select RU.ARTICULO,art.DESCRIPCION, RU.RUBRO,RU.CANTIDAD_ESTANDAR as cantidad,RU.OPERACION ,art.PESO_BRUTO
+public function ListarArticuloOperacion(Request $request){
+$id1=$_GET['art'];
+$id2=$_GET['ope'];
+DB::table('IBERPLAS.CP_RUBRO')->delete();
+$rubro=DB::Connection()->select("select RU.ARTICULO,art.DESCRIPCION, RU.RUBRO,RU.CANTIDAD_ESTANDAR as cantidad,RU.OPERACION ,art.PESO_BRUTO
 from 
 IBERPLAS.ESTRUC_PROC_RUBRO RU,
 IBERPLAS.ARTICULO ART 
@@ -208,75 +208,56 @@ and ru.ARTICULO=art.ARTICULO
 and RU.OPERACION='$id2'
 and RU.VERSION IN (SELECT VERSION FROM IBERPLAS.ESTRUC_MANUFACTURA WHERE ESTADO='A' AND ARTICULO='$id1')
  ");
-
-     
-
-      foreach ($rubro as  $value) {
-        $rubro=new CP_RUBRO;
-          $rubro->ARTICULO=$value->ARTICULO;
-         $rubro->CENTROCOSTO=$value->RUBRO;
-         $rubro->CANTIDAD=$value->cantidad;
-         $rubro->OPERACION=$value->OPERACION;
-         $rubro->PESO_KILO=$value->PESO_BRUTO;
-          $rubro->save();
-      }
-
-      $rubro2=DB::Connection()->select("SELECT MAX(cantidad) as cantidad,SUM(PESO_KILO) PESO_BRUTO FROM IBERPLAS.CP_RUBRO");
-      
-       foreach ($rubro2 as  $value) {
-         $cantidad=$value->cantidad;
-         $PESO_BRUTO=$value->PESO_BRUTO;
-         
-       };
-
-     
-
-        DB::table('IBERPLAS.CP_RUBRO')->update(['CANTIDAD'=>$cantidad]);
-
-        $rubro3=CP_RUBRO::all();
-        foreach ($rubro3 as $key => $value) {
-          # code...
-          $fechamax=DB::Connection()->select("select MAX(fechamax) fechamaxima from IBERPLAS.CP_PLANIFICACION where centrocosto='$value->CENTROCOSTO' ");
-           
-           foreach ($fechamax as  $fechamax) {
-             # code...
-            $fecha=$fechamax->fechamaxima;
-           }
-           $date = carbon::now();
-             $date = $date->format('Y-m-d H:i:s');
-           if(is_null($fecha)){
-           CP_RUBRO::where('CENTROCOSTO','=',$value->CENTROCOSTO)->UPDATE(['FECHAMAX'=>$date]);
-           }else{
-           CP_RUBRO::where('CENTROCOSTO','=',$value->CENTROCOSTO)->UPDATE(['FECHAMAX'=>$fecha]);
-            
-           }
-          
-        }
-                     
-
-
-    $articulooperacion=DB::Connection()->select("SELECT CONVERT(VARCHAR(10),RUBRO2.fechamax,103) AS Fecha,RIGHT(RUBRO2.fechamax, 7) AS Hora, DATEADD(HOUR,1, fechamax) as fechamax, RUBRO.ARTICULO,RUBRO.OPERACION,RUBRO.RUBRO,MAQUINA.DESCRIP_RUBRO,
+foreach ($rubro as  $value) {
+  $rubro=new CP_RUBRO;
+  $rubro->ARTICULO=$value->ARTICULO;
+  $rubro->CENTROCOSTO=$value->RUBRO;
+  $rubro->CANTIDAD=$value->cantidad;
+  $rubro->OPERACION=$value->OPERACION;
+  $rubro->PESO_KILO=$value->PESO_BRUTO;
+  $rubro->save();
+}
+$rubro2=DB::Connection()->select("SELECT MAX(cantidad) as cantidad,SUM(PESO_KILO) PESO_BRUTO FROM IBERPLAS.CP_RUBRO");
+foreach ($rubro2 as  $value) {
+  $cantidad=$value->cantidad;
+  $PESO_BRUTO=$value->PESO_BRUTO;
+};
+DB::table('IBERPLAS.CP_RUBRO')->update(['CANTIDAD'=>$cantidad]);
+$rubro3=CP_RUBRO::all();
+foreach ($rubro3 as $key => $value) {
+  $fechamax=DB::Connection()->select("select MAX(fechamax) fechamaxima from IBERPLAS.CP_PLANIFICACION where centrocosto='$value->CENTROCOSTO'  and VersionEstado='A' ");        
+  foreach ($fechamax as  $fechamax) {         
+    $fecha=date($this->FormatoFechaTimeBD,strtotime( $fechamax->fechamaxima));
+  }
+  $date = date($this->FormatoFechaTimeBD);
+  //$date = $date->format('Y-m-d H:i:s');
+  //$date = $date->format('d-m-Y H:i:s');
+  //$date=$date->toDateTimeString();
+  if(is_null($fecha)){
+    CP_RUBRO::where('CENTROCOSTO','=',$value->CENTROCOSTO)->UPDATE(['FECHAMAX'=>$date]);
+  }else{
+    
+    CP_RUBRO::where('CENTROCOSTO','=',$value->CENTROCOSTO)->UPDATE(['FECHAMAX'=>$fecha]);
+  }        
+}
+$articulooperacion=DB::Connection()->select("SELECT RUBRO2.fechamax AS Fecha,RIGHT(RUBRO2.fechamax, 7) AS Hora, DATEADD(HOUR,1, fechamax) as fechamax, RUBRO.ARTICULO,RUBRO.OPERACION,RUBRO.RUBRO,MAQUINA.DESCRIP_RUBRO,
     CASE  WHEN MANU.CANT_PRODUCIDA_PP= 1 THEN (MANU.CANT_PRODUCIDA_PT/RUBRO2.CANTIDAD) ELSE (MANU.CANT_PRODUCIDA_PP/RUBRO2.CANTIDAD) END AS HORASXHORA,
     CASE  RUBRO.CP_TIEMPOCAMBIOMOLDE WHEN NULL THEN RUBRO.CP_TIEMPOCAMBIOMOLDE ELSE 0.0  END as CP_TIEMPOCAMBIOMOLDE 
-     FROM 
-     IBERPLAS.ESTRUC_PROC_RUBRO  RUBRO ,
-     IBERPLAS.estruc_proceso MANU,
-     IBERPLAS.RUBRO_LIQ MAQUINA,
-     IBERPLAS.CP_RUBRO RUBRO2
-     where 
-     MAQUINA.RUBRO=RUBRO2.CENTROCOSTO AND
-     MAQUINA.RUBRO=RUBRO.RUBRO AND
-     MANU.ARTICULO='$id1' AND
-     MANU.OPERACION='$id2' AND
-     MANU.VERSION IN (SELECT VERSION FROM IBERPLAS.ESTRUC_MANUFACTURA WHERE ESTADO='A' AND ARTICULO='$id1')AND
-     RUBRO.ARTICULO='$id1' AND 
-     RUBRO.VERSION IN (SELECT VERSION FROM IBERPLAS.ESTRUC_MANUFACTURA WHERE ESTADO='A' AND ARTICULO='$id1')
+    FROM 
+    IBERPLAS.ESTRUC_PROC_RUBRO  RUBRO ,
+    IBERPLAS.estruc_proceso MANU,
+    IBERPLAS.RUBRO_LIQ MAQUINA,
+    IBERPLAS.CP_RUBRO RUBRO2
+    where 
+    MAQUINA.RUBRO=RUBRO2.CENTROCOSTO AND
+    MAQUINA.RUBRO=RUBRO.RUBRO AND
+    MANU.ARTICULO='$id1' AND
+    MANU.OPERACION='$id2' AND
+    MANU.VERSION IN (SELECT VERSION FROM IBERPLAS.ESTRUC_MANUFACTURA WHERE ESTADO='A' AND ARTICULO='$id1')AND
+    RUBRO.ARTICULO='$id1' AND 
+    RUBRO.VERSION IN (SELECT VERSION FROM IBERPLAS.ESTRUC_MANUFACTURA WHERE ESTADO='A' AND ARTICULO='$id1')
     AND RUBRO.OPERACION='$id2'");
-    
-    //dd($articulooperacion);
-    //CP_EQUIPOARTICULO::selectRaw('ID,EQUIPO,DESC_EQUIPO,PIEZASXHORAS,TIEMPOMOLDE')-> where('ARTICULO','=',$id1)->where('OPERACION','=',$id2)->get();
-    
-      return   json_encode ($articulooperacion);
-     
-  }
+return   json_encode ($articulooperacion);     
+}
+
 }

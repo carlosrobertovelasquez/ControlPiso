@@ -69,13 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
 Route::get('ConsultaProduccion',['uses'=>'OrdenProduccionController@ConsultaProduccion', 'as'=>'ConsultaProduccion']);  
 Route::get('ListaRegistros/{id}',['uses'=>'OrdenProduccionController@ListaRegistros', 'as'=>'ListaRegistros']);  
 Route::get('EliminarProduccion/{id}',['uses'=>'OrdenProduccionController@EliminarProduccion', 'as'=>'EliminarProduccion']);  
-  //planificador
- Route::get('Planificacion/{id}', ['uses'=>'OrdenProduccionController@planificacion','as'=>'planificacion']);
-Route::get('planificar', ['uses'=>'OrdenProduccionController@planificar2','as'=>'planificar']);
-//Route::get('planificar2/{id}/{id4}/{id5}/{id6}/{id8}', ['uses'=>'OrdenProduccionController@planificar2','as'=>'planificar2']);
-Route::get('guardar_planificacion', ['uses'=>'OrdenProduccionController@guardar_planificacion','as'=>'guardar_planificacion']);
-
- Route::get('ConsultaPedidos/{id}',['uses'=>'OrdenProduccionController@ConsultaPedidos', 'as'=>'ConsultaPedidos']);
+Route::get('ConsultaPedidos/{id}',['uses'=>'OrdenProduccionController@ConsultaPedidos', 'as'=>'ConsultaPedidos']);
 Route::get('ConsultaMaquina',['uses'=>'OrdenProduccionController@ConsultaMaquina', 'as'=>'ConsultaMaquina']);
 Route::get('ConsultaMaquina02/{id}/{id2}',['uses'=>'OrdenProduccionController@ConsultaMaquina02', 'as'=>'ConsultaMaquina02']);
 Route::get('viajero/{id}',['uses'=>'OrdenProduccionController@viajero', 'as'=>'viajero']);
@@ -94,6 +88,10 @@ Route::get('viajero/{id}',['uses'=>'OrdenProduccionController@viajero', 'as'=>'v
  Route::get('planificador/estadob/{id}', ['uses'=>'PlanificarController@estadoB', 'as'=>'planificar.estadoB']) ;
  Route::get('planificador/procesos', ['uses'=>'PlanificarController@procesos', 'as'=>'planificar.procesos']) ;
  Route::get('planificador/cambiohora', ['uses'=>'PlanificarController@CambioHora', 'as'=>'planificar.cambiohora']) ;
+ Route::get('Planificacion/{id}', ['uses'=>'OrdenProduccionController@planificacion','as'=>'planificacion']);
+ Route::get('planificar', ['uses'=>'OrdenProduccionController@planificar2','as'=>'planificar']);  
+ Route::get('guardar_planificacion', ['uses'=>'OrdenProduccionController@guardar_planificacion','as'=>'guardar_planificacion']);
+   
 
 
 

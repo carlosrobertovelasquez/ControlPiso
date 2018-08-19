@@ -32,7 +32,8 @@ use App\Mail\ComprasMail;
 
 class PlanificarController extends Controller
 {
-
+  private $FormatoFechaTimeBD="d-m-Y H:i:s";
+  private $FormatoFechaBD="d-m-Y";
     public function __construct()
     {
       Carbon::setlocale('es');
@@ -161,8 +162,8 @@ public function CambioHora(Request $request){
   $request->lunes_tc,$request->martes_tc,$request->miercoles_tc,$request->jueves_tc,$request->viernes_tc,$request->sabado_tc,$request->domingo_tc,);   
   CP_TEMP_PLANIFICACION_ENCA::where('USUARIO','=',\Auth::user()->name )->delete();
   CP_TEMP_PLANIFICACION::where('USUARIOCREACION','=',\Auth::user()->name )->delete();           
-  $date = carbon::now();
-  $date = $date->format('Y-m-d H:i:s');
+  
+  $hoy = date($this->FormatoFechaTimeBD);
   //$date = $date->format('d-m-Y H:i:s');
   $id=$request->id;// id
   $id2=$request->ordenproduccion;// orden produccion
@@ -213,16 +214,10 @@ public function CambioHora(Request $request){
     $CP_PLANIFICACION->operacion=$value->operacion;
     $CP_PLANIFICACION->ordenproduccion=$value->ordenproduccion;
     $CP_PLANIFICACION->articulo=$value->articulo;
-    $CP_PLANIFICACION->fechamin=date("Y-m-d H:i:s",strtotime($value->fechamin));
-    $CP_PLANIFICACION->fechamax=date("Y-m-d H:i:s",strtotime($value->fechamax));
-    $CP_PLANIFICACION->fechaCalendariomin=date("Y-m-d H:i:s",strtotime($value->fechaCalendariomin));
-    $CP_PLANIFICACION->fechaCalendariomax=date("Y-m-d H:i:s",strtotime($value->fechaCalendariomax));
-    /*
-    $CP_PLANIFICACION->fechamin=date("d-m-Y H:i:s",strtotime($value->fechamin));
-    $CP_PLANIFICACION->fechamax=date("d-m-Y H:i:s",strtotime($value->fechamax));
-    $CP_PLANIFICACION->fechaCalendariomin=date("d-m-Y H:i:s",strtotime($value->fechaCalendariomin));
-    $CP_PLANIFICACION->fechaCalendariomax=date("d-m-Y H:i:s",strtotime($value->fechaCalendariomax));
-    */
+    $CP_PLANIFICACION->fechamin=date($this->FormatoFechaTimeBD,strtotime($value->fechamin));
+    $CP_PLANIFICACION->fechamax=date($this->FormatoFechaTimeBD,strtotime($value->fechamax));
+    $CP_PLANIFICACION->fechaCalendariomin=date($this->FormatoFechaTimeBD,strtotime($value->fechaCalendariomin));
+    $CP_PLANIFICACION->fechaCalendariomax=date($this->FormatoFechaTimeBD,strtotime($value->fechaCalendariomax));
     $CP_PLANIFICACION->cantidad=$value->cantidad;
     $CP_PLANIFICACION->centrocosto=$value->centrocosto;
     $CP_PLANIFICACION->pedido=$value->pedido;
@@ -232,7 +227,7 @@ public function CambioHora(Request $request){
     $CP_PLANIFICACION->porcentaje=0;
     $CP_PLANIFICACION->FICHA_TECNICA=$value->FICHA_TECNICA;
     $CP_PLANIFICACION->USUARIOCREACION=\Auth::user()->name;
-    $CP_PLANIFICACION->FECHACREACION=$date;
+    $CP_PLANIFICACION->FECHACREACION=$hoy;
     $CP_PLANIFICACION->save();
     $id_planificacion=$CP_PLANIFICACION->id;
   }
@@ -242,7 +237,7 @@ public function CambioHora(Request $request){
   $fechainicial=CP_PLANIFICACION::where('id','=',$id_planificacion)->get();
   //calulamos el detalle en la tabla cp_detalleplanificcion
   foreach ($fechainicial as $key => $value) {
-    $nueva2=date('Y-m-d', strtotime($value->fechamin));
+    $nueva2=date($this->FormatoFechaBD, strtotime($value->fechamin));
     //$nueva2=date('d-m-Y', strtotime($value->fechamin));
     $hora=date('H',strtotime($value->fechamin) );
     $orden=$value->ordenproduccion;
@@ -289,12 +284,8 @@ public function CambioHora(Request $request){
       $plantemp->hora=$turnos->hora;
       $plantemp->orden=$turnos->orden;     
       $plantemp->turno=$turnos->turno;
-      $plantemp->fecha=date("Y-m-d",strtotime($turnos->fecha));
-      $plantemp->fechaCalendario=date("Y-m-d H:i:s",strtotime( $turnos->fechaCalendario));
-      /*
-      $plantemp->fecha=date("d-m-Y",strtotime($turnos->fecha));
-      $plantemp->fechaCalendario=date("d-m-Y H:i:s",strtotime( $turnos->fechaCalendario));
-      */
+      $plantemp->fecha=date($this->FormatoFechaBD,strtotime($turnos->fecha));
+      $plantemp->fechaCalendario=date($this->FormatoFechaTimeBD,strtotime( $turnos->fechaCalendario));
       $plantemp->operacion=$id3;
       $plantemp->centrocosto=$equipo;
       $plantemp->secuencia=$secuencia2;
@@ -338,14 +329,13 @@ public function CambioHora(Request $request){
     $thorafin=CP_CALENDARIO_PLANIFICADOR_DETALLE::where ('ID','=',$horafin)->select('hora','fechahora')->get();
     foreach ($thoraini as $value) {
       $hora=$value->hora;
-      $fhora=date('Y-m-d H:i:s',strtotime($value->fechahora));
+      $fhora=date($this->FormatoFechaTimeBD,strtotime($value->fechahora));
       //$fhora=date('d-m-Y H:i:s',strtotime($value->fechahora));
       CP_TEMP_PLANIFICACION_ENCA::where('horaini','=',$horaini)->update(['thoraini'=>$hora,'fhoraini'=>$fhora]);
     }
     foreach ($thorafin as $value) {
       $hora=$value->hora;
-      $fhora=date('Y-m-d H:i:s',strtotime($value->fechahora));     
-      //$fhora=date('d-m-Y H:i:s',strtotime($value->fechahora));     
+      $fhora=date($this->FormatoFechaTimeBD,strtotime($value->fechahora));     
       CP_TEMP_PLANIFICACION_ENCA::where('horafin','=',$horafin)->update(['thorafin'=>$hora,'fhorafin'=>$fhora]);
     }
   }
@@ -353,7 +343,7 @@ public function CambioHora(Request $request){
             DATEADD(MINUTE,59,fhorafin) as fhorafin2 from IBERPLAS.CP_TEMP_PLANIFICACION_ENCA");
   foreach($fechafin as $fechafin){
     $thorafin=$fechafin->thorafin2;
-    $fhorafin=date('Y-m-d H:i:s',strtotime($fechafin->fhorafin2));
+    $fhorafin=date($this->FormatoFechaTimeBD,strtotime($fechafin->fhorafin2));
     //$fhorafin=date('d-m-Y H:i:s',strtotime($fechafin->fhorafin2));
     $id=$fechafin->id;
     CP_TEMP_PLANIFICACION_ENCA::where('id','=',$id)->update(['thorafin'=>$thorafin,'fhorafin'=>$fhorafin]);
@@ -378,16 +368,18 @@ CP_TEMP_PLANIFICACION::where('USUARIOCREACION','=',\Auth::user()->name )->delete
 $conta=0;
 $fechafinal=DB::Connection()->select("select  id, DATEADD(MINUTE,-59,fechamax) as fechamax,centrocosto
             from IBERPLAS.CP_PLANIFICACION WHERE id='$idantiguo'");
+
 foreach ($fechafinal as $key => $value) {
-  $fechaFinal=date('Y-m-d H:i:s',strtotime($value->fechamax));
+  $fechaFinal=date($this->FormatoFechaTimeBD,strtotime($value->fechamax));
   //$fechaFinal=date('d-m-Y H:i:s',strtotime($value->fechamax));
   $centrocosto=$value->centrocosto;
 }
+
 $ticketactivos=DB::Connection()->select("select * from 
                 IBERPLAS.CP_PLANIFICACION WHERE fechamin>'$fechaFinal' and centrocosto='$centrocosto' and VersionEstado='A' and aprobadaMo='N' and aprobadaMA='N' order by fechamin ");
      //Recorremos los registros que estan en lista para actualizar
-if(is_null($ticketactivos)){
-  foreach ($ticketactivos as $ticketactivos) {
+if(!is_null($ticketactivos)){
+   foreach ($ticketactivos as $ticketactivos) {
     $ticketnumero=$ticketactivos->id;
     if($idCantidadHoras>=1){
       $cambiohoras=DB::Connection()->select("SELECT id,DATEADD(HOUR,+$idCantidadHoras,fechamin) as fechamin,
@@ -395,9 +387,10 @@ if(is_null($ticketactivos)){
                   DATEADD(HOUR,+$idCantidadHoras,fechaCalendariomax) as fechaCalendariomax
                   FROM IBERPLAS.CP_PLANIFICACION where id='$ticketactivos->id'");       
       foreach ($cambiohoras as $key => $cambiohoras) {
-        CP_PLANIFICACION::where('id','=',$cambiohoras->id)->update(['fechamin'=>date('Y-m-d H:i:s',strtotime($cambiohoras->fechamin)),
-        'fechamax'=>date('Y-d-m H:i:s',strtotime($cambiohoras->fechamax)),'fechaCalendariomin'=>date('Y-m-d H:i:s',strtotime($cambiohoras->fechaCalendariomin)),
-        'fechaCalendariomax'=>date('Y-m-d H:i:s',strtotime($cambiohoras->fechaCalendariomax))]);
+        CP_PLANIFICACION::where('id','=',$cambiohoras->id)
+        ->update(['fechamin'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechamin)),
+        'fechamax'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechamax)),'fechaCalendariomin'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechaCalendariomin)),
+        'fechaCalendariomax'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechaCalendariomax))]);
        /* 
         CP_PLANIFICACION::where('id','=',$cambiohoras->id)->update(['fechamin'=>date('d-m-Y H:i:s',strtotime($cambiohoras->fechamin)),
         'fechamax'=>date('d-m-Y H:i:s',strtotime($cambiohoras->fechamax)),'fechaCalendariomin'=>date('d-m-Y H:i:s',strtotime($cambiohoras->fechaCalendariomin)),
@@ -410,10 +403,10 @@ if(is_null($ticketactivos)){
                   DATEADD(HOUR,$idCantidadHoras,fechaCalendariomax) as fechaCalendariomax
                   FROM IBERPLAS.CP_PLANIFICACION where id='$ticketactivos->id'");         
       foreach ($cambiohoras as $key => $cambiohoras) {
-        CP_PLANIFICACION::where('id','=',$cambiohoras->id)->update(['fechamin'=>date('Y-m-d H:i:s',strtotime($cambiohoras->fechamin)),
-        'fechamax'=>date('Y-d-m H:i:s',strtotime($cambiohoras->fechamax)),
-        'fechaCalendariomin'=>date('Y-m-d H:i:s',strtotime($cambiohoras->fechaCalendariomin)),
-        'fechaCalendariomax'=>date('Y-m-d H:i:s',strtotime($cambiohoras->fechaCalendariomax))]);
+        CP_PLANIFICACION::where('id','=',$cambiohoras->id)->update(['fechamin'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechamin)),
+        'fechamax'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechamax)),
+        'fechaCalendariomin'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechaCalendariomin)),
+        'fechaCalendariomax'=>date($this->FormatofechaTimeBD,strtotime($cambiohoras->fechaCalendariomax))]);
         /*
         CP_PLANIFICACION::where('id','=',$cambiohoras->id)->update(['fechamin'=>date('d-m-Y H:i:s',strtotime($cambiohoras->fechamin)),
         'fechamax'=>date('d-m-Y H:i:s',strtotime($cambiohoras->fechamax)),
@@ -425,7 +418,7 @@ if(is_null($ticketactivos)){
     $fechainicial=CP_PLANIFICACION::where('id','=',$ticketactivos->id)->get();
           //calulamos el detalle en la tabla cp_detalleplanificcion
     foreach ($fechainicial as  $fechainicial) {
-      $nueva2=date('Y-m-d', strtotime($fechainicial->fechamin));
+      $nueva2=date($this->FormatoFechaBD, strtotime($fechainicial->fechamin));
       //$nueva2=date('d-m-Y', strtotime($fechainicial->fechamin));
       $hora=date('H',strtotime($fechainicial->fechamin) );
       $orden=$fechainicial->ordenproduccion;
@@ -450,8 +443,8 @@ if(is_null($ticketactivos)){
     foreach ($turnos01 as $turnos01) {
       $inicioturno=$turnos01->ID;
     }
-    $turnos2=CP_CALENDARIO_PLANIFICADOR_DETALLE::whereNull('ESTADO')-> where('ID','>=',$inicioturno)->where('tipo','=','N')
-          ->get();
+    $turnos2=CP_CALENDARIO_PLANIFICADOR_DETALLE::whereNull('ESTADO')->
+     where('ID','>=',$inicioturno)->where('tipo','=','N')->get();
     $conta=0;              
     $vcantidad=0;
     $cantidad2=0;
@@ -470,8 +463,8 @@ if(is_null($ticketactivos)){
           $plantemp->hora=$turnos2->hora;
           $plantemp->orden=$turnos2->orden;     
           $plantemp->turno=$turnos2->turno;
-          $plantemp->fecha=date("Y-m-d",strtotime($turnos2->fecha));
-          $plantemp->fechaCalendario=date("Y-m-d H:i:s",strtotime( $turnos2->fechaCalendario));
+          $plantemp->fecha=date($this->FormatoFechaBD,strtotime($turnos2->fecha));
+          $plantemp->fechaCalendario=date($this->FormatoFechaTimeBD,strtotime( $turnos2->fechaCalendario));
           //$plantemp->fecha=date("d-m-Y",strtotime($turnos2->fecha));
           //$plantemp->fechaCalendario=date("d-m-Y H:i:s",strtotime( $turnos2->fechaCalendario));
           $plantemp->operacion=$id3;
@@ -515,13 +508,13 @@ if(is_null($ticketactivos)){
       $thorafin=CP_CALENDARIO_PLANIFICADOR_DETALLE::where ('ID','=',$horafin)->select('hora','fechahora')->get();
       foreach ($thoraini as $thoraini) {
         $hora=$thoraini->hora;
-        $fhora=date('Y-m-d H:i:s',strtotime($thoraini->fechahora));
+        $fhora=date($this->FormatoFechaTimeBD,strtotime($thoraini->fechahora));
         //$fhora=date('d-m-Y H:i:s',strtotime($thoraini->fechahora));
         CP_TEMP_PLANIFICACION_ENCA::where('horaini','=',$horaini)->update(['thoraini'=>$hora,'fhoraini'=>$fhora]);
       }
       foreach ($thorafin as $thorafin) {
         $hora=$thorafin->hora;
-        $fhora=date('Y-m-d H:i:s',strtotime($thorafin->fechahora));
+        $fhora=date($this->FormatoFechaTimeBD,strtotime($thorafin->fechahora));
         //$fhora=date('d-m-Y H:i:s',strtotime($thorafin->fechahora));
         CP_TEMP_PLANIFICACION_ENCA::where('horafin','=',$horafin)->update(['thorafin'=>$hora,'fhorafin'=>$fhora]);
       }
@@ -530,7 +523,7 @@ if(is_null($ticketactivos)){
     $fechafin=DB::Connection()->select("select id,  DATEADD(MINUTE,59,thorafin) as thorafin2,DATEADD(MINUTE,59,fhorafin) as fhorafin2 from IBERPLAS.CP_TEMP_PLANIFICACION_ENCA");
     foreach($fechafin as $fechafin){
       $thorafin=$fechafin->thorafin2;
-      $fhorafin=date('Y-m-d H:i:s',strtotime($fechafin->fhorafin2));
+      $fhorafin=date($this->FormatoFechaTimeBD,strtotime($fechafin->fhorafin2));
       //$fhorafin=date('d-m-Y H:i:s',strtotime($fechafin->fhorafin2));
       $id=$fechafin->id;
       CP_TEMP_PLANIFICACION_ENCA::where('id','=',$id)->update(['thorafin'=>$thorafin,'fhorafin'=>$fhorafin]);
@@ -550,7 +543,7 @@ if(is_null($ticketactivos)){
 
 public function guardar_planificacion3($orden,$pedido,$articulo,$id){
 $date = carbon::now();
-$date = $date->format('Y-m-d H:i:s');    
+$hoy = date($this->FormatoFechaTimeBD);
 //$date = $date->format('d-m-Y H:i:s');    
 //  $fechaplanificada=$request->id_fecha;
 // $fechaplanificada=date("d-m-Y", strtotime($fechaplanificada)) ;
@@ -563,9 +556,9 @@ foreach ($encatem as $value) {
   $fechai=$value->fhoraini;
   $fechaf=$value->fhorafin;
   $fecha=$value->fecha;
-  $fechai=date("Y-m-d H:i:s",strtotime($fechai));
-  $fechaf=date("Y-m-d H:i:s",strtotime($fechaf));
-  $fecha01=date("Y-m-d",strtotime($fecha));
+  $fechai=date($this->FormatoFechaTimeBD,strtotime($fechai));
+  $fechaf=date($this->FormatoFechaTimeBD,strtotime($fechaf));
+  $fecha01=date($this->FormatoFechaBD,strtotime($fecha));
   /*
   $fechai=date("d-m-Y H:i:s",strtotime($fechai));
   $fechaf=date("d-m-Y H:i:s",strtotime($fechaf));
@@ -592,7 +585,7 @@ foreach ($encatem as $value) {
   $planificacion->estado='P';
   $planificacion->ficha_tecnica=$value->ficha_tecnica;
   $planificacion->USUARIOCREACION=\Auth::user()->name;
-  $planificacion->FECHACREACION=$date;
+  $planificacion->FECHACREACION=$hoy;
   $planificacion->save();
 } 
 // recorremos la tabla cp_encabezadoplanificacion para actualizar las cantidades por turnos
@@ -633,8 +626,8 @@ foreach ($tempdetalle as $value) {
   $detall->hora=$value->hora;
   $detall->orden=$value->orden;
   $detall->turno=$value->turno;
-  $detall->fecha= date("Y-m-d H:i:s",strtotime( $value->fecha));;
-  $detall->fechaCalendario= date("Y-m-d H:i:s",strtotime( $value->fechaCalendario));
+  $detall->fecha= date($this->FormatoFechaTimeBD,strtotime( $value->fecha));;
+  $detall->fechaCalendario= date($this->FormatoFechaTimeBD,strtotime( $value->fechaCalendario));
   /*
   $detall->fecha= date("d-m-Y H:i:s",strtotime( $value->fecha));;
   $detall->fechaCalendario= date("d-m-Y H:i:s",strtotime( $value->fechaCalendario));
@@ -646,7 +639,7 @@ foreach ($tempdetalle as $value) {
   $detall->FICHA_TECNICA=$value->FICHA_TECNICA;
   $detall->cantidadxhora=$value->cantidadxhora;
   $detall->USUARIOCREACION=\Auth::user()->name;
-  $detall->FECHACREACION=$date;
+  $detall->FECHACREACION=$hoy;
   $detall->save();
 }              
 CP_TEMP_PLANIFICACION_ENCA::where('USUARIO','=',\Auth::user()->name )->delete();
@@ -670,7 +663,7 @@ $gannt=DB::Connection()->select("select ('ORDEN='+PLA.ordenproduccion+'-'+'ARTIC
 cp_tasks::where('ordenproduccion','=', $orden)->where('planificador_id','=',$maximo)->delete();
 cp_events::where('ordenproduccion','=', $orden)->where('planificador_id','=',$maximo)->delete();
 foreach ($gannt as $value) {
-  $fecha=date("Y-m-d H:i:s",strtotime($value->fechamin));
+  $fecha=date($this->FormatoFechaTimeBD,strtotime($value->fechamin));
   //$fecha=date("d-m-Y H:i:s",strtotime($value->fechamin));
   $task=new cp_tasks;
   $task->text=$value->text;
@@ -695,7 +688,7 @@ $min=DB::Connection()->select("select min(calendario_id) mino, DATEPART(WEEK,fec
 foreach ($min as  $value) {
   $fechai=CP_DETALLEPLANIFICACION::where('calendario_id','=',$value->mino)->first();                     
   $task=new CP_events;
-  $task->start_date=date("Y-m-d H:i:s",strtotime($fechai->fechaCalendario));
+  $task->start_date=date($this->FormatoFechaTimeBD,strtotime($fechai->fechaCalendario));
   //$task->start_date=date("d-m-Y H:i:s",strtotime($fechai->fechaCalendario));
   $task->planificador_id=$maximo;
   $task->bloque=$value->semana;                     
@@ -707,7 +700,7 @@ $max=DB::Connection()->select("select max(calendario_id) max, DATEPART(WEEK,fech
                       group by  DATEPART(WEEK,fechaCalendario) ");
 foreach ($max as  $value) {
   $max2=CP_DETALLEPLANIFICACION::where('calendario_id','=',$value->max)->first();
-  $fechaf=date("Y-m-d H:i:s",strtotime($max2->fechaCalendario));                     
+  $fechaf=date($this->FormatoFechaTimeBD,strtotime($max2->fechaCalendario));                     
   //$fechaf=date("d-m-Y H:i:s",strtotime($max2->fechaCalendario));                     
   CP_events::where('bloque','=',$value->semana)->where('planificador_id','=',$maximo)->update(['end_date'=>$fechaf]);
 }
@@ -735,7 +728,7 @@ CP_consumo::where('planificacion_id','=',$idantiguo)->update(['planificacion_id'
 }
 public function guardar_planificacion2($orden,$pedido,$articulo){
 $date = carbon::now();
-$date = $date->format('Y-m-d H:i:s');    
+$hoy = date($this->FormatoFechaTimeBD);    
 //$date = $date->format('d-m-Y H:i:s');    
 $maximo=CP_PLANIFICACION::max('id');
 $encatem=CP_TEMP_PLANIFICACION_ENCA::all();
@@ -743,9 +736,9 @@ foreach ($encatem as $value) {
   $fechai=$value->fhoraini;
   $fechaf=$value->fhorafin;
   $fecha=$value->fecha;
-  $fechai=date("Y-m-d H:i:s",strtotime($fechai));
-  $fechaf=date("Y-m-d H:i:s",strtotime($fechaf));
-  $fecha01=date("Y-m-d",strtotime($fecha));
+  $fechai=date($this->FormatoFechaTimeBD,strtotime($fechai));
+  $fechaf=date($this->FormatoFechaTimeBD,strtotime($fechaf));
+  $fecha01=date($this->FormatoFechaBD,strtotime($fecha));
   /*
   $fechai=date("d-m-Y H:i:s",strtotime($fechai));
   $fechaf=date("d-m-Y H:i:s",strtotime($fechaf));
@@ -772,7 +765,7 @@ foreach ($encatem as $value) {
   $planificacion->estado='P';
   $planificacion->ficha_tecnica=$value->ficha_tecnica;
   $planificacion->USUARIOCREACION=\Auth::user()->name;
-  $planificacion->FECHACREACION=$date;
+  $planificacion->FECHACREACION=$hoy;
   $planificacion->save();
 } 
 // recorremos la tabla cp_encabezadoplanificacion para actualizar las cantidades por turnos
@@ -813,8 +806,8 @@ foreach ($tempdetalle as $value) {
   $detall->hora=$value->hora;
   $detall->orden=$value->orden;
   $detall->turno=$value->turno;
-  $detall->fecha= date("Y-m-d H:i:s",strtotime( $value->fecha));;
-  $detall->fechaCalendario= date("Y-m-d H:i:s",strtotime( $value->fechaCalendario));
+  $detall->fecha= date($this->FormatoFechaTimeBD,strtotime( $value->fecha));;
+  $detall->fechaCalendario= date($this->FormatoFechaTimeBD,strtotime( $value->fechaCalendario));
   //$detall->fecha= date("d-m-Y H:i:s",strtotime( $value->fecha));;
   //$detall->fechaCalendario= date("d-m-Y H:i:s",strtotime( $value->fechaCalendario));
   $detall->operacion=$value->operacion;
@@ -824,7 +817,7 @@ foreach ($tempdetalle as $value) {
   $detall->FICHA_TECNICA=$value->FICHA_TECNICA;
   $detall->cantidadxhora=$value->cantidadxhora;
   $detall->USUARIOCREACION=\Auth::user()->name;
-  $detall->FECHACREACION=$date;
+  $detall->FECHACREACION=$hoy;
   $detall->save();       
 }              
 CP_TEMP_PLANIFICACION_ENCA::where('USUARIO','=',\Auth::user()->name )->delete();
@@ -852,7 +845,7 @@ $gannt=DB::Connection()->select("select ('ORDEN='+PLA.ordenproduccion+'-'+'ARTIC
 cp_tasks::where('ordenproduccion','=', $orden)->delete();
 cp_events::where('ordenproduccion','=', $orden)->delete();
 foreach ($gannt as $value) {
-  $fecha=date("Y-m-d H:i:s",strtotime($value->fechamin));
+  $fecha=date($this->FormatoFechaTimeBD,strtotime($value->fechamin));
   //$fecha=date("d-m-Y H:i:s",strtotime($value->fechamin));
   $task=new cp_tasks;
   $task->text=$value->text;
@@ -872,8 +865,8 @@ $gannt2=DB::Connection()->select("select pl.fechaCalendariomin,pl.fechaCalendari
                 PL.ARTICULO=ART.ARTICULO AND
                 pl.id='$maximo'" );
 foreach ($gannt2 as $value) {
-  $fechai=date("Y-m-d H:i:s",strtotime($value->fechaCalendariomin));
-  $fechaf=date("Y-m-d H:i:s",strtotime($value->fechaCalendariomax));
+  $fechai=date($this->FormatoFechaTimeBD,strtotime($value->fechaCalendariomin));
+  $fechaf=date($this->FormatoFechaTimeBD,strtotime($value->fechaCalendariomax));
   //$fechai=date("d-m-Y H:i:s",strtotime($value->fechaCalendariomin));
   //$fechaf=date("d-m-Y H:i:s",strtotime($value->fechaCalendariomax));
   $task=new CP_events;
