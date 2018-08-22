@@ -18,17 +18,17 @@ use Illuminate\Http\Response;
 
 class EquipoController extends Controller
 {
-private $FormatoFechaTimeBD="d-m-Y H:i:s";
-private $FormatoFechaBD="d-m-Y";
-public function index(){
-  $ESTRUC_MANUFACTURA=ESTRUC_MANUFACTURA::where('ESTADO','=','A')->get();
-  return view('ControPiso.Maestros.Equipos.listado_equipo', ['ESTRUC_MANUFACTURA' => $ESTRUC_MANUFACTURA]);
-}
-public function agregar_articulo($id){
-$Equipo=RUBRO_LIQ::findOrFail($id);
-$Articulo=Articulo::orderby('DESCRIPCION','asc')->get();
-return view('ControPiso.Maestros.Equipos.Equipo_articulo', ['Equipo' => $Equipo], ['Articulo' => $Articulo]);
-}
+    private $FormatoFechaTimeBD="d-m-Y H:i:s";
+    private $FormatoFechaBD="d-m-Y";
+    public function index(){
+        $ESTRUC_MANUFACTURA=ESTRUC_MANUFACTURA::where('ESTADO','=','A')->get();
+        return view('ControPiso.Maestros.Equipos.listado_equipo', ['ESTRUC_MANUFACTURA' => $ESTRUC_MANUFACTURA]);
+    }
+    public function agregar_articulo($id){
+        $Equipo=RUBRO_LIQ::findOrFail($id);
+        $Articulo=Articulo::orderby('DESCRIPCION','asc')->get();
+        return view('ControPiso.Maestros.Equipos.Equipo_articulo', ['Equipo' => $Equipo], ['Articulo' => $Articulo]);
+    }
 public function listar_equipo_articulo2($id){
 $ESTRUC_PROCESO=DB::Connection()->select("SELECT ARTICULO,OPERACION,DESCRIPCION,EQUIPO,HORAS_STD_MOE ,CANT_PRODUCIDA_PT,(CANT_PRODUCIDA_PT/HORAS_STD_MOE) AS CANTIDADXHORA
       FROM 
@@ -97,58 +97,22 @@ return redirect('Equipo');
     }
 
 
-    public function autoComplete(Request $request){
-
-    $term=$request->term;
-    $items=ARTICULO::where('ARTICULO','LIKE','%'.$term.'%')->
-                     orwhere('DESCRIPCION','LIKE','%'.$term.'%')->take(5)->get();
-    if(count($items)==0){
-        $searchResult[]='No Existe Item';
-    }else{
-        foreach ($items as $query) {
-           // $searchResult[]=$value->ARTICULO;
-            $searchResult[] = [ 'id' => $query->ARTICULO, 'value' => $query->ARTICULO.' '.$query->DESCRIPCION ];
+    public function autoComplete(Request $request)
+    {
+        $term = $request->term;
+        $items = ARTICULO::where('ARTICULO', 'LIKE', '%' . $term . '%')->
+        orwhere('DESCRIPCION', 'LIKE', '%' . $term . '%')->take(5)->get();
+        if (count($items) == 0) {
+            $searchResult[] = 'No Existe Item';
+        } else {
+            foreach ($items as $query) {
+                // $searchResult[]=$value->ARTICULO;
+                $searchResult[] = ['id' => $query->ARTICULO, 'value' => $query->ARTICULO . ' ' . $query->DESCRIPCION];
+            }
         }
-    }
 
 
-
-   // return $searchResult;
-    return Response()->json($searchResult);
-    /*
-
-     return $availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-
-
-*/
-
-    function procesoArticulo(){
-
-    }
-
+        return Response()->json($searchResult);
     }
 
   public function editarArticuloCentrocosto(Request $request,$id){
@@ -225,7 +189,7 @@ foreach ($rubro2 as  $value) {
 DB::table('IBERPLAS.CP_RUBRO')->update(['CANTIDAD'=>$cantidad]);
 $rubro3=CP_RUBRO::all();
 foreach ($rubro3 as $key => $value) {
-  $fechamax=DB::Connection()->select("select MAX(fechamax) fechamaxima from IBERPLAS.CP_PLANIFICACION where centrocosto='$value->CENTROCOSTO'  and VersionEstado='A' ");        
+  $fechamax=DB::Connection()->select("select MAX(fechaCalendariomax) fechamaxima from IBERPLAS.CP_PLANIFICACION where centrocosto='$value->CENTROCOSTO'  and VersionEstado='A' ");        
   foreach ($fechamax as  $fechamax) {         
     $fecha=date($this->FormatoFechaTimeBD,strtotime( $fechamax->fechamaxima));
   }

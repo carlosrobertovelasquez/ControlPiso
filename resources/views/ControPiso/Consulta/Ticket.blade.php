@@ -443,7 +443,6 @@ function jsFunction(){
 
 }
 
-
 function actualizarhoras(){
   var dataString=$('#form_planificacion').serialize();
   var urlraiz=$("#url_raiz_proyecto").val();
@@ -455,7 +454,7 @@ function actualizarhoras(){
   }).done(function(data){    
      });
      $('#myModal').modal('hide');
-    //location.reload(true);
+    location.reload(true);
 }
 
 

@@ -234,6 +234,7 @@ public function CambioHora(Request $request){
   $idnuevo=$id_planificacion;
    
   CP_PLANIFICACION::where('id','=',$id)->update(['VersionEstado'=>'H']);
+  CP_DETALLEPLANIFICACION::where('planificacion_id','=',$id)->update(['VersionEstado'=>'H']);
   $fechainicial=CP_PLANIFICACION::where('id','=',$id_planificacion)->get();
   //calulamos el detalle en la tabla cp_detalleplanificcion
   foreach ($fechainicial as $key => $value) {
@@ -356,8 +357,8 @@ public function CambioHora(Request $request){
   $idCantidadHoras=$request->horasadicionales;    
   $this->ActualizarTicket($idantiguo,$idCentroCosto,$idFechaHora,$idCantidadHoras);
   //return   json_encode ($cambiohoras);
-  
-  return redirect()->action('OrdenProduccionController@Ticket');
+  flash("Se Realizo Cambios a la Orden : ".$orden." OK ",'danger')->important();
+  return redirect()->route('Ticket');
 }
 public function ActualizarTicket($idantiguo,$idCentroCosto,$idFechaHora,$idCantidadHoras)
 {
@@ -406,7 +407,7 @@ if(!is_null($ticketactivos)){
         CP_PLANIFICACION::where('id','=',$cambiohoras->id)->update(['fechamin'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechamin)),
         'fechamax'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechamax)),
         'fechaCalendariomin'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechaCalendariomin)),
-        'fechaCalendariomax'=>date($this->FormatofechaTimeBD,strtotime($cambiohoras->fechaCalendariomax))]);
+        'fechaCalendariomax'=>date($this->FormatoFechaTimeBD,strtotime($cambiohoras->fechaCalendariomax))]);
         /*
         CP_PLANIFICACION::where('id','=',$cambiohoras->id)->update(['fechamin'=>date('d-m-Y H:i:s',strtotime($cambiohoras->fechamin)),
         'fechamax'=>date('d-m-Y H:i:s',strtotime($cambiohoras->fechamax)),
