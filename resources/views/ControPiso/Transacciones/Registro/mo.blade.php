@@ -258,6 +258,7 @@
                            <label>TOTAL : </label>
                           <input id="total" name="total" type="number" class="form-control"  readonly="readonly" >
                          </div>
+                        
 
                           <div class="form-group ">                                  
                                     
@@ -281,8 +282,9 @@
                                     </span> Confirmar Registro de MO
                                   </button>             
                          </div>
-                            
+                             
              </div>
+             <div id="lista_produccion"></div>
 
       </div>
 
@@ -315,6 +317,7 @@
   metaxTurno();
   listaempleados();
   listarproduccion();
+  listaproduccion2();
   var novalidar;
  
  
@@ -578,6 +581,26 @@ $.ajax({
  });
 }
 
+function listaproduccion2(){
+var id= document.getElementById("norden").value;
+var id2= document.getElementById("id_turno").value;
+var id3= document.getElementById("id_operacion").value; 
+var urlraiz=$("#url_raiz_proyecto").val();
+var miurl =urlraiz+"/registro/listarproducc2";
+
+$.ajax({
+  type:'get',
+  url:miurl,
+  data:{id:id,id2:id2,id3:id3},
+  success:function(data){
+    $('#lista_produccion').empty().html(data);
+  }
+ });
+}
+
+
+
+
 function listarproduccion(){
 var id= document.getElementById("norden").value;
 var id2= document.getElementById("id_turno").value;
@@ -627,6 +650,7 @@ function actualizar(){
   metaxTurno();
   listaempleados();
   listarproduccion();
+  listaproduccion2();
   document.getElementById("btnadicionar").disabled=false;
   document.getElementById("comentarios").disabled=false;
   document.getElementById("id_clave").disabled=false;

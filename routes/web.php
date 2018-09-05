@@ -106,6 +106,7 @@ Route::get('registro/pr/{id}/{id2}/{id3}',['uses'=>'RegistroController@pr', 'as'
 Route::get('registro/impresion/{id}/{id2}',['uses'=>'RegistroController@impresion', 'as'=>'registro.impresion']);
 Route::get('registro/listarhoras',['uses'=>'RegistroController@listarhoras', 'as'=>'registro.listarhoras']);
 Route::get('registro/listaremple',['uses'=>'RegistroController@listaremple', 'as'=>'registro.listaremple']);
+Route::get('registro/listarproducc2',['uses'=>'RegistroController@listarproducc2', 'as'=>'registro.listarproducc2']);
 Route::get('registro/listaroperaciones',['uses'=>'RegistroController@listaroperaciones', 'as'=>'registro.listaroperaciones']);
 Route::get('registro/listarproduccion',['uses'=>'RegistroController@listarproduccion', 'as'=>'registro.listarproduccion']);
 Route::get('registro/listarproduccion2',['uses'=>'RegistroController@listarproduccion2', 'as'=>'registro.listarproduccion2']);

@@ -204,6 +204,20 @@ public function listaremple(){
       return view('ControPiso.Transacciones.Registro.lista_empleados')  
       ->with('registroempleados',$registroempleados); 
     }
+    public function listarproducc2(){
+        $id=$_GET['id'];
+        $id2=$_GET['id2'];
+        $id3=$_GET['id3'];
+        dd($id2); 
+        $registroproduccion=CP_REGISTROPRODUCCION::
+         where('ORDENPRODUCCION','=',$id)
+         ->where('TURNO','=',$id2)
+         ->where('OPERACION','=',$id3)->get() ;
+        
+    
+          return view('ControPiso.Transacciones.Registro.lista_produccion')  
+          ->with('registroproduccion',$registroproduccion); 
+        }    
     public function listarproduccion(){
         $id=$_GET['id'];
         $id2=$_GET['id2'];

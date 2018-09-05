@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aca8a300-74a9-42e2-84a1-3b912ad7f32a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/ControlPiso.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ControlPiso.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/EquipoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/EquipoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PlanificarController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PlanificarController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/ControPiso/Consulta/Ticket.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/ControPiso/Consulta/Ticket.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,20 +15,7 @@
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="EquipoController.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/EquipoController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1224">
-              <caret line="27" column="43" selection-start-line="27" selection-start-column="42" selection-end-line="27" selection-end-column="43" />
-              <folding>
-                <element signature="e#40#68#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -60,7 +41,6 @@
         <option value="$PROJECT_DIR$/public/js/controlpiso.js" />
         <option value="$PROJECT_DIR$/resources/views/layouts/app.blade.php" />
         <option value="$PROJECT_DIR$/routes/web.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/OrdenProduccionController.php" />
         <option value="$PROJECT_DIR$/config/app.php" />
         <option value="$PROJECT_DIR$/resources/views/invoice/index.blade.php" />
         <option value="$PROJECT_DIR$/public/componentes/invoice.tag" />
@@ -69,6 +49,7 @@
         <option value="$PROJECT_DIR$/resources/views/layouts/partials/htmlheader.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/ControPiso/Transacciones/planificacion.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/EquipoController.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/OrdenProduccionController.php" />
       </list>
     </option>
   </component>
@@ -204,8 +185,14 @@
               <item name="ControlPiso" type="b2602c69:ProjectViewProjectNode" />
               <item name="ControlPiso" type="462c0819:PsiDirectoryNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="Http" type="462c0819:PsiDirectoryNode" />
-              <item name="Controllers" type="462c0819:PsiDirectoryNode" />
+              <item name="Modelos" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ControlPiso" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ControlPiso" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="Modelos" type="462c0819:PsiDirectoryNode" />
+              <item name="ControlPiso" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -250,21 +237,35 @@
       <workItem from="1514570886148" duration="224000" />
       <workItem from="1534950789150" duration="1358000" />
       <workItem from="1534952373579" duration="295000" />
-      <workItem from="1534952695051" duration="2938000" />
+      <workItem from="1534952695051" duration="4542000" />
     </task>
+    <task id="LOCAL-00001" summary="version 1.0">
+      <created>1534955718739</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1534955718739</updated>
+    </task>
+    <task id="LOCAL-00002" summary="version 1.0.0.1">
+      <created>1534955916121</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1534955916121</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="33296000" />
+    <option name="totallyTimeSpent" value="34900000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="768" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Version Control" order="7" visible="true" weight="0.3287879" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="7" />
@@ -312,6 +313,11 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="version 1.0" />
+    <MESSAGE value="version 1.0.0.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="version 1.0.0.1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -592,13 +598,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/OrdenProduccionController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="116" column="19" selection-start-line="116" selection-start-column="19" selection-end-line="116" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/layouts/partials/mainheader.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -612,13 +611,27 @@
     <entry file="file://$PROJECT_DIR$/resources/views/ControPiso/Consulta/ConsultaTicket.blade.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/OrdenProduccionController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="258" column="84" lean-forward="true" selection-start-line="258" selection-start-column="84" selection-end-line="258" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/EquipoController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1224">
-          <caret line="27" column="43" selection-start-line="27" selection-start-column="42" selection-end-line="27" selection-end-column="43" />
+        <state relative-caret-position="357">
+          <caret line="120" column="32" lean-forward="true" selection-start-line="120" selection-start-column="32" selection-end-line="120" selection-end-column="32" />
           <folding>
             <element signature="e#40#68#0#PHP" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Modelos/ControlPiso/CP_events.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="39" lean-forward="true" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
         </state>
       </provider>
     </entry>
