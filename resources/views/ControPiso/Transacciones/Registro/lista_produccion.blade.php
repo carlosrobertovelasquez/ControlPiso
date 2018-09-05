@@ -21,13 +21,13 @@
                           <td>{{$registroproduccion->METATURNO}}</td>
                           <td>{{$registroproduccion->PRODUCCION}}</td>
                           <td>{{$registroproduccion->EFICIENCIA}}</td>
-                          <td>{{$registroproduccion->DESPERDICIOREC}}</td>
-                          <td>{{$registroproduccion->DESPERDICIONOREC}}</td>
+                          <td>{{$registroproduccion->DESPERDICIORECU}}</td>
+                          <td>{{$registroproduccion->DESPERDICIONORECU}}</td>
                           <td>{{$registroproduccion->TOTAL}}</td>
                           <td>{{$registroproduccion->FECHA}}</td>
                            <td>         
-                           {!!Form::open(['route'=>['registro.eliminar',$registroempleados->ID],'method'=>'GET'])!!}             
-                            <a href="#"  class="btn-delete" onclick="eliminaremple({{$registroempleados->ID}})">
+                           {!!Form::open(['route'=>['registro.eliminarregistroproduccion',$registroproduccion->ID],'method'=>'GET'])!!}             
+                            <a href="#"  class="btn-delete" onclick="eliminarregistroproduccion({{$registroproduccion->ID}})">
                               <span class="glyphicon glyphicon-remove " aria-hidden="true"></span>
                             </a>
                            {!!Form::close()!!} 

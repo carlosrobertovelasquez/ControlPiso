@@ -94,8 +94,8 @@ public function mo($id,$id2,$id3)
     $detalle=CP_ENCABEZADOPLANIFICACION::where('planificacion_id','=',$id)->get();
     $operacion=OP_OPERACION::where('ORDEN_PRODUCCION','=',$id2)->get();
     $clave_mo=CP_CLAVE_MO::all();
-    $registrohoras=CP_REGISTROHORAS::all();  
-    return view('ControPiso.Transacciones.Registro.mo02')
+    $registrohoras=CP_REGISTROHORAS::all(); 
+        return view('ControPiso.Transacciones.Registro.mo02')
     ->with('operacion',$operacion)
     ->with('encabezado',$encabezado)
     ->with('detalle',$detalle)
@@ -208,7 +208,7 @@ public function listaremple(){
         $id=$_GET['id'];
         $id2=$_GET['id2'];
         $id3=$_GET['id3'];
-        dd($id2); 
+
         $registroproduccion=CP_REGISTROPRODUCCION::
          where('ORDENPRODUCCION','=',$id)
          ->where('TURNO','=',$id2)
@@ -655,28 +655,8 @@ foreach ($horastrabajadas as $value) {
     $opera=CP_CLAVE_MO::where('CLAVE','=',$request->id_clave)->get();
 
      
-     foreach ($opera as $opera) {
-         
-         $opera1=$opera->OPERACION;
-     }
-
-     $existe=CP_REGISTROPRODUCCION::where('TURNO','=',$request->id_turno)->where('OPERACION','=',$request->id_operacion)->where('ORDENPRODUCCION','=',$request->norden)->first();
-
+       
     
-     if(count($existe)==1){
-      
-       CP_REGISTROPRODUCCION::where('TURNO','=',$request->id_turno)
-      ->where('OPERACION','=',$request->id_operacion)
-      ->where('ORDENPRODUCCION','=',$request->norden)
-      ->update(['PRODUCCION'=>$request->produccion,
-        'DESPERDICIORECU'=>$request->desrecuperable,
-        'DESPERDICIONORECU'=>$request->desnorecuperable,
-        'EFICIENCIA'=>$request->eficiencia,
-        'TOTAL'=>$request->total]);
-      Flash::success("Se ha Actualizo la Orden de Produccion  ".$request->norden." de manera exitosa!");
-
-     }else{
-
      $registroproduccion=new CP_REGISTROPRODUCCION;
  
      $registroproduccion->ORDENPRODUCCION=$request->norden;
@@ -697,7 +677,7 @@ foreach ($horastrabajadas as $value) {
 
      Flash::success("Se ha registrado la Orden de Produccion ".$request->norden." de manera exitosa!");
     
-     }
+    
 
     //ACTUALIZAMOS LA TABLA CP_PLANIFICACION CANTIDAD PRODUCCIDA
     $sumaproduccion=CP_REGISTROPRODUCCION::where('planificador_id','=',$request->planificacion_id)->sum('produccion');
@@ -985,14 +965,17 @@ public function confirmarconsumo($id1,$id2){
       }
 
     public function eliminaremple(Request $request,$id){
-
      
-      
-      
         $horas=CP_REGISTROEMPLEADOS::where('ID','=',$id)->delete();
        // return response()->json(['message'=> $horas->CLAVE.'Fue eliminado Corretamente']);
       }
 
+      public function eliminarregistroproduccion(Request $request,$id){
+     
+        $horas=CP_REGISTROPRODUCCION::where('ID','=',$id)->delete();
+       // return response()->json(['message'=> $horas->CLAVE.'Fue eliminado Corretamente']);
+      }  
+      
  
     public function buscarempleado(Request $request){
 

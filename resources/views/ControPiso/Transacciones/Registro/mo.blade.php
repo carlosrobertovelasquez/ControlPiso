@@ -14,81 +14,54 @@
         
 <section class="content">
 <a href=" {{url('registroMO')}}" ><span class="btn btn-primary" aria-hidden="true">Regresar</span></a>
-  <form  id="form_registrohoras" role="search" action="#" method="GET" >
-
-          <input type="hidden" name="_token" value="{{csrf_token()}}">
-          <input type="hidden" name="planificacion_id" name="planificacion_id" value="{{$encabezado->id}}">
-
-    <div class="box box-default">
-      <div class="box-header with-border">
-        <h3 class="box-title">Datos Generales</h3>
-
-
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-           
-          </div>
+<form  id="form_registrohoras" role="search" action="#" method="GET" >
+  <input type="hidden" name="_token" value="{{csrf_token()}}">
+  <input type="hidden" name="planificacion_id" name="planificacion_id" value="{{$encabezado->id}}">
+  <div class="box box-default">
+    <div class="box-header with-border">
+      <h3 class="box-title">Datos Generales</h3>
+      <div class="box-tools pull-right">
+        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
       </div>
-
-      <div class="box-body">
-         <div class="col-md-6">
+    </div>
+    <div class="box-body">
+      <div class="col-md-6">
+        <div class="form-group">
           <div class="form-group">
-                 <div class="form-group">
-                          <label > Fecha : </label>
-                          <input  type="date" class="form-control" id="id_fecha"  name="id_fecha" style="width: 450px;height: 40px"   value="<?php echo date("Y-m-d");?>">      
-                         </div>
+            <label > Fecha : </label>
+            <input  type="date" class="form-control" id="id_fecha"  name="id_fecha" style="width: 450px;height: 40px"   value="<?php echo date("Y-m-d");?>">      
+          </div>
                 <!-- /.input group -->
-              </div>
-          
-           <div class="form-group">
-                        <label>Centro Costo : </label>
-                        <input id="maquina" name="maquina" type="text" class="form-control" value="{{$encabezado->centrocosto}}" readonly="readonly" >
-                      </div>
-                 <div class="form-group">
-                        <label>Orden Produccion : </label>
-                        <input id="norden" name="norden" type="text" class="form-control" value="{{$encabezado->ordenproduccion}}" readonly="readonly" >
-                      </div>     
-
-                       </div>
-             <div class="col-md-6">
-               <div class="form-group">
-                        <label>Articulo : </label>
-                        <input id="id_articulo" name="id_articulo" type="text" class="form-control" value="{{$encabezado->articulo}}" readonly="readonly" >
-                      </div>     
-                       <div class="form-group">
-
-                           <label>Selecione el Operacion : </label>
-                        <input id="id_operacion" name="id_operacion" type="text" class="form-control" value="{{$encabezado->operacion}}" readonly="readonly" >
-                             
-                        
-
-                         </div>
-
-                         <div class="form-group">
-
-                           <label>Selecione Turno y Fecha : </label>
-
-                          <select id="id_turno" name="id_turno" class="form-control select2" onchange="actualizar()" style="width: 100%;">
-                                
-                             
-                                   @foreach($detalle as $detalle)
-                                   <option value="{{ $detalle->id }}">{{ number_format($detalle->turno)}} -- {{ $detalle->thoraini }} -- {{ $detalle->thorafin }} ==({{ $detalle->fecha }}) <> HORAS PLANIFICADAS ({{$detalle->horas}})</option>
-                                   @endforeach
-                          </select>
-
-
-                         </div>
-
-                
-
-
-
-             </div>
-
+        </div>
+        <div class="form-group">
+          <label>Centro Costo : </label>
+          <input id="maquina" name="maquina" type="text" class="form-control" value="{{$encabezado->centrocosto}}" readonly="readonly" >
+        </div>
+        <div class="form-group">
+          <label>Orden Produccion : </label>
+          <input id="norden" name="norden" type="text" class="form-control" value="{{$encabezado->ordenproduccion}}" readonly="readonly" >
+        </div>     
       </div>
-
-     </div>
-
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Articulo : </label>
+          <input id="id_articulo" name="id_articulo" type="text" class="form-control" value="{{$encabezado->articulo}}" readonly="readonly" >
+        </div>     
+        <div class="form-group">
+          <label>Selecione el Operacion : </label>
+          <input id="id_operacion" name="id_operacion" type="text" class="form-control" value="{{$encabezado->operacion}}" readonly="readonly" >
+        </div>
+        <div class="form-group">
+          <label>Selecione Turno y Fecha : </label>
+          <select id="id_turno" name="id_turno" class="form-control select2" onchange="actualizar()" style="width: 100%;">
+            @foreach($detalle as $detalle)
+              <option value="{{ $detalle->id }}">{{ number_format($detalle->turno)}} -- {{ $detalle->thoraini }} -- {{ $detalle->thorafin }} ==({{ $detalle->fecha }}) <> HORAS PLANIFICADAS ({{$detalle->horas}})</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+    </div>
+    </div>
     <div class="box box-default">
       <div class="box-header with-border">
         <h3 class="box-title">Registro Horas Trabajadas</h3>
@@ -284,11 +257,12 @@
                          </div>
                              
              </div>
-             <div id="lista_produccion"></div>
+             
 
       </div>
-
-     </div>   
+      
+     </div>  
+     <div id="lista_produccion"></div> 
  </form>
   
 </section>
@@ -879,38 +853,33 @@ function eliminar(id){
 }
 
 function eliminaremple(id){
-
    //var id=$(this).attr("fila");
    var urlraiz=$("#url_raiz_proyecto").val();
      var miurl =urlraiz+"/registro/eliminaremple/"+id+"";
-      
-    
-    
-
     if(!confirm("Esta seguro de Eliminar")){
       return false;
     }
-
     $.ajax({
       url:miurl,
     }).done(function(data){
        listaempleados();
     });
-
 }
 
-
+function eliminarregistroproduccion(id){
+   //var id=$(this).attr("fila");
+   var urlraiz=$("#url_raiz_proyecto").val();
+     var miurl =urlraiz+"/registro/eliminarregistroproduccion/"+id+"";
+    if(!confirm("Esta seguro de Eliminar")){
+      return false;
+    }
+    $.ajax({
+      url:miurl,
+    }).done(function(data){
+       listaproduccion2();
+    });
+}
   
     
- 
-
-  
-   
-
-
-
-   
- 
-
 </script>
 @endsection

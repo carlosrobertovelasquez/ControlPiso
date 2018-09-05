@@ -126,6 +126,7 @@ Route::get('registro/eliminar/{id}',['uses'=>'RegistroController@eliminar', 'as'
 Route::get('registro/eliminaremple/{id}',['uses'=>'RegistroController@eliminaremple', 'as'=>'registro.eliminaremple']);
 Route::get('registro/eliminarconsumo/{id}/{id2}/',['uses'=>'RegistroController@eliminarconsumo', 'as'=>'registro.eliminarconsumo']);
 Route::get('registro/eliminarproduccion2/{id}',['uses'=>'RegistroController@eliminarproduccion2', 'as'=>'registro.eliminarproduccion2']);
+Route::get('registro/eliminarregistroproduccion/{id}',['uses'=>'RegistroController@eliminarregistroproduccion', 'as'=>'registro.eliminarregistroproduccion']);
 Route::get('registro/buscarempleado/', ['uses'=>'RegistroController@buscarempleado','as'=>'registro.buscarempleado']);
 Route::get('registro/buscararticulo/', ['uses'=>'RegistroController@buscararticulo','as'=>'registro.buscararticulo']);
 Route::get('registro/agregarconsumo/',['uses'=>'RegistroController@agregarconsumo', 'as'=>'registro.agregarconsumo']);
