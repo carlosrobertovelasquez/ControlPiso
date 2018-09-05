@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('htmlheader_title')
-    Mano de Obra
+    Produccion
 @endsection
 
 @section('contentheader_title')
- Registro de Mano de Obra 
+ Registro de Produccion
 @endsection
 
 @section('main-content')
@@ -105,7 +105,7 @@
                     <div class="form-group">
                         <label  class="col-sm-3 control-label">Articulo</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="articulo" name="articulo" placeholder="Buscar Articulo">
+                            <input type="text" class="form-control" id="articulo" name="articulo" readonly="readonly">
                         </div>
                     </div>
                     <input type="hidden" name="id_articulo2" id="id_articulo2" value="" >
@@ -157,19 +157,7 @@
 
 <script>
 $(document).ready(function(){
-var urlraiz=$("#url_raiz_proyecto").val();
-var miurl =urlraiz+"/registro/buscararticulo";
-$('#articulo').autocomplete({
-    source:miurl,
-    minlenght:1,
-    appendTo: "#frmproductos",
-    autoFocus:true,
-    select:function(e,ui){
-      $('#descripcion').val(ui.item.nombre);
-      $('#id_articulo2').val(ui.item.id);     
-    }
-});
-  
+ 
   listhoras();
  });
 
@@ -193,8 +181,28 @@ function actualizar(){
   listhoras();
 }
 $('#btn_add').click(function () {
-    $('#btn-save').val("add");
+    var id= document.getElementById("orden").value;
+var urlraiz=$("#url_raiz_proyecto").val();
+var miurl =urlraiz+"/registro/produccion";
+$.ajax({
+  type:'get',
+  url:miurl,
+  data:{id:id},
+  success:function(data){
+      
+      $('#articulo').val(data[0]+'-'+data[1]);
+      $('#id_articulo2').val(data[0]);
+      $('#descripcion').val(data[1]);
+  }
+ });
+$('#btn-save').val("add");
    
+
+
+
+
+
+
     $('#frmproductos').trigger("reset");
     $('#myModal').modal('show');
 });

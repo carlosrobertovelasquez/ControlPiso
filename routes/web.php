@@ -116,6 +116,7 @@ Route::get('registro/horasTrabajadas',['uses'=>'RegistroController@horasTrabajad
 Route::get('registro/metaxTurno',['uses'=>'RegistroController@metaxTurno', 'as'=>'registro.metaxTurno']);
 Route::get('registro/metaxTurno2',['uses'=>'RegistroController@metaxTurno2', 'as'=>'registro.metaxTurno2']);
 Route::get('registro/horasplanificadas',['uses'=>'RegistroController@horasplanificadas', 'as'=>'registro.horasplanificadas']);
+Route::get('registro/produccion',['uses'=>'RegistroController@produccion', 'as'=>'registro.produccion']);
 Route::get('registro/aprobar/{id2}',['uses'=>'RegistroController@aprobar', 'as'=>'registro.aprobar']);
 
 Route::get('registro/agregar2/',['uses'=>'RegistroController@agregar2', 'as'=>'registro.agregar2']);

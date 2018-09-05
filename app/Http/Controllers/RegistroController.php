@@ -20,6 +20,7 @@ use App\Modelos\Softland\ARTICULO;
 use App\Modelos\Softland\OP_OPER_CONSUMO;
 use App\Modelos\Softland\OP_OPER_DET;
 use App\Modelos\Softland\OP_OPER_DET_MO;
+use App\Modelos\Softland\ORDEN_PC;
 use App\Modelos\ControlPiso\CP_consumo;
 use Illuminate\Support\Facades\DB;
 Use Carbon\Carbon;
@@ -37,6 +38,7 @@ class RegistroController extends Controller
                ->with('OrdenProduccion',$OrdenProduccion);
     }
 
+    
     public function RegistroMO(){
     $OrdenProduccion=CP_PLANIFICACION::wherein('ESTADO',['A' ])->where('VersionEstado','=','A')->get();
         return view('ControPiso.Transacciones.Registro.MO.index')
@@ -348,6 +350,29 @@ public function metaxTurno(){
   
 return response::json ($cantidad2); 
 }
+
+public function produccion(){
+    $id=$_GET['id'];
+    $articulo=DB::Connection()->select ( "select PC.COMPONENTE,ART.DESCRIPCION
+    from 
+    IBERPLAS.ORDEN_PC  PC,
+    IBERPLAS.ARTICULO ART
+    where 
+    PC.COMPONENTE=ART.ARTICULO AND
+    ORDEN_PRODUCCION='$id'
+    GROUP BY PC.COMPONENTE,ART.DESCRIPCION");
+   
+    foreach ($articulo as  $data) {
+        
+        $result[]=$data->COMPONENTE;
+        $result[]=$data->DESCRIPCION;
+    }
+  
+return response::json ($result); 
+}
+
+
+
 
 public function metaxTurno2(){
     $id=$_GET['id'];
